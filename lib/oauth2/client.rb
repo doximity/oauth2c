@@ -1,7 +1,9 @@
 module OAuth2
   module Client
-    autoload :Agent,    "oauth2/client/agent"
-    autoload :Strategy, "oauth2/client/strategy"
-    autoload :VERSION,  "oauth2/client/version"
+    autoload :AccessToken,  "oauth2/client/access_token"
+    autoload :Agent,        "oauth2/client/agent"
+    autoload :AuthzHandler, "oauth2/client/authz_handler"
+    autoload :TokenHandler, "oauth2/client/token_handler"
+    autoload :VERSION,      "oauth2/client/version"
   end
 end

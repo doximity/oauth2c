@@ -1,4 +1,5 @@
 require "bundler/setup"
+require "webmock/rspec"
 require "oauth2/client"
 
 RSpec.configure do |config|
