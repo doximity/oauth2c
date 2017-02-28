@@ -9,8 +9,12 @@ module OAuth2
         end
 
         class TokenHandler < OAuth2::Client::TokenHandler
-          def initialize(callback_params)
-            @callback_params = callback_params
+          def self.from_authz_callback(callback_params)
+            new(callback_params["code"])
+          end
+
+          def initialize(code)
+            @code = code
           end
 
           def grant_type
@@ -18,7 +22,7 @@ module OAuth2
           end
 
           def extra_params
-            { code: @callback_params["code"] }
+            { code: @code }
           end
         end
       end
