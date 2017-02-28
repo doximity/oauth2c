@@ -11,9 +11,9 @@ module OAuth2
         @client_secret = client_secret
 
         @http_client = HTTP.nodelay
-                           .basic_auth(user: @client_id, pass: @client_secret)
-                           .accept("application/json")
-                           .headers("Content-Type": "application/x-www-form-urlencoded; encoding=UTF-8")
+          .basic_auth(user: @client_id, pass: @client_secret)
+          .accept("application/json")
+          .headers("Content-Type": "application/x-www-form-urlencoded; encoding=UTF-8")
       end
 
       def authz_url(authz_handler, redirect_uri:, scope:, state: nil)
@@ -27,7 +27,7 @@ module OAuth2
         }
 
         url = @authz_srv_url.dup
-        url.path << "/oauth/authorize"
+        url.path  = "#{url.path}/authorize"
         url.query = URI.encode_www_form(params.to_a)
         url.to_s
       end
@@ -39,8 +39,13 @@ module OAuth2
           **token_handler.extra_params,
         }.compact
 
-        response = @http_client.post("#{@authz_srv_url}/token", body: JSON.dump(params))
-        AccessToken.new(JSON.parse(response.body))
+        response = @http_client.post("#{@authz_srv_url}/token", body: URI.encode_www_form(params))
+
+        if response.status.success?
+          AccessToken.new(JSON.parse(response.body))
+        else
+          puts response.body
+        end
       end
 
       private
@@ -51,6 +56,8 @@ module OAuth2
           scope
         when Array
           scope.join(" ")
+        when NilClass
+          []
         else
           raise ArgumentError, "invalid scope: #{scope.inspect}"
         end
