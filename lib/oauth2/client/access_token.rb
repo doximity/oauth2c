@@ -21,6 +21,17 @@ module OAuth2
 
         @expires_at = (Time.respond_to?(:zone) ? Time.zone.now : Time.now) + @expires_in
       end
+
+      def attributes
+        {
+          access_token: @access_token,
+          token_type: @token_type,
+          expires_in: @expires_in,
+          expires_at: @expires_at,
+          refresh_token: @refresh_token,
+          extra_params: @extra_params,
+        }
+      end
     end
   end
 end

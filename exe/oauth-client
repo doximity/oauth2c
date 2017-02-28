@@ -69,6 +69,8 @@ class OAuth2::Client::CLI
   end
 
   def run!(args)
+    @threads = []
+
     args = args.dup
     @parser.parse!(args)
 
@@ -86,21 +88,40 @@ class OAuth2::Client::CLI
       error!("client secret not informed")
     end
 
-    get_token
+    agent = OAuth2::Client::Agent.new(@options.authz_srv, @options.client_id, @options.client_secret)
+
+    namespace = @options.strategy.gsub(/(?:\A|[_])(\w)/) { $1.upcase }
+    strategy  = ::OAuth2::Client::Strategies.const_get(namespace)
+
+    if strategy::const_defined?(:AuthzHandler)
+      token = token_with_authz_flow(agent, strategy)
+    else
+      token = agent.token(strategy::TokenHandler.new(params))
+    end
+
+    puts <<-EOS % token.attributes
+Access Token successfully issued:
+
+  access_token: %<access_token>s
+    token_type: %<token_type>s
+    expires_in: %<expires_in>d
+    expires_at: %<expires_at>s
+ refresh_token: %<refresh_token>s
+  extra_params: %<extra_params>p
+
+    EOS
+
+    puts "Shutting down..."
+    @threads.each(&:join)
+  ensure
+    @threads.clear
   end
 
   private
 
-  def strategy
-    return @_strategy if defined?(@_strategy)
-    namespace = @options.strategy.gsub(/(?:\A|[_])(\w)/) { $1.upcase }
-    @_strategy = ::OAuth2::Client::Strategies.const_get(namespace)
-  end
-
-  def get_token
+  def token_with_authz_flow(agent, strategy)
     buf   = StringIO.new
     log   = Logger.new(buf)
-    agent = OAuth2::Client::Agent.new(@options.authz_srv, @options.client_id, @options.client_secret)
     state = SecureRandom.urlsafe_base64(8)
     queue = Queue.new
     redirect_uri = "http://localhost:7374"
@@ -112,13 +133,12 @@ class OAuth2::Client::CLI
 
       params = queue.pop
 
-      p agent.token(strategy::TokenHandler.new(params), redirect_uri: redirect_uri)
-
-      puts "Shutting down web server..."
-      Rack::Handler::WEBrick.shutdown
+      agent.token(strategy::TokenHandler.new(params), redirect_uri: redirect_uri)
     rescue
       puts buf
       raise
+    ensure
+      @threads << Thread.new { Rack::Handler::WEBrick.shutdown }
     end
   end
 
