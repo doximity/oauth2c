@@ -18,8 +18,10 @@ require "json"
 
 module OAuth2c
   class Agent
-    def initialize(authz_srv_url, client_id, client_secret)
-      @authz_srv_url = URI.parse(authz_srv_url.chomp("/"))
+    def initialize(authz_url, token_url, client_id, client_secret)
+      @authz_url = authz_url.chomp("/")
+      @token_url = token_url.chomp("/")
+
       @client_id     = client_id
       @client_secret = client_secret
 
@@ -39,8 +41,7 @@ module OAuth2c
         **authz_handler.extra_params,
       }
 
-      url = @authz_srv_url.dup
-      url.path  = "#{url.path}/authorize"
+      url = URI.parse(@authz_url)
       url.query = URI.encode_www_form(params.to_a)
       url.to_s
     end
@@ -55,12 +56,13 @@ module OAuth2c
         params[:redirect_uri] = redirect_uri
       end
 
-      response = @http_client.post("#{@authz_srv_url}/token", body: URI.encode_www_form(params))
+      response = @http_client.post(@token_url, body: URI.encode_www_form(params))
 
       if response.status.success?
         AccessToken.new(JSON.parse(response.body))
       else
-        puts response.body
+        json = JSON.parse(response.body)
+        raise Error.new(json["error"], json["error_description"])
       end
     end
 

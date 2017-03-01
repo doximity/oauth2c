@@ -14,6 +14,8 @@
 
 module OAuth2c
   module CLI
+    autoload :Config,    "oauth2c/cli/config"
+    autoload :Options,   "oauth2c/cli/options"
     autoload :Runner,    "oauth2c/cli/runner"
     autoload :WebServer, "oauth2c/cli/web_server"
   end

@@ -13,12 +13,23 @@
 # limitations under the License.
 
 module OAuth2c
-  autoload :AccessToken,  "oauth2c/access_token"
-  autoload :Agent,        "oauth2c/agent"
-  autoload :AuthzHandler, "oauth2c/authz_handler"
-  autoload :CLI,          "oauth2c/cli"
-  autoload :Error,        "oauth2c/error"
-  autoload :Strategies,   "oauth2c/strategies"
-  autoload :TokenHandler, "oauth2c/token_handler"
-  autoload :VERSION,      "oauth2c/version"
+  module CLI
+    class Options
+      attr_accessor(
+        :authz_uri,
+        :token_uri,
+        :client_id,
+        :client_secret,
+        :redirect_uri,
+        :strategy,
+        :scope,
+      )
+
+      def initialize(attrs = {})
+        attrs.each do |name, value|
+          public_send("#{name}=", value)
+        end
+      end
+    end
+  end
 end

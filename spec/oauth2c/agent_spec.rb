@@ -16,7 +16,7 @@ require "spec_helper"
 
 RSpec.describe OAuth2c::Agent do
   subject do
-    described_class.new("http://authz.test/oauth", "CLIENT_ID", "CLIENT_SECRET")
+    described_class.new("http://authz.test/oauth/authorize", "http://authz.test/oauth/token", "CLIENT_ID", "CLIENT_SECRET")
   end
 
   class CustomStrategy
