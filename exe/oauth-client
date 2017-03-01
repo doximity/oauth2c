@@ -8,7 +8,5 @@ include OAuth2::Client
 
 STDOUT.sync = true
 
-options = CLI::Options.new(
-  strategy: "authorization_code",
-)
+options = CLI::Options.new
 CLI.new(options).run!(ARGV)
