@@ -15,12 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require "bundler/setup"
 require "oauth2c"
 
-STDOUT.sync = true
-
-include OAuth2c
-options = CLI::Options.new
-CLI.new(options).run!(ARGV)
+include OAuth2c::CLI
+options = Runner::Options.new
+Runner.new(options).run!(ARGV)
