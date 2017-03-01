@@ -2,7 +2,7 @@ module OAuth2
   module Client
     module Strategies
       module ResourceOwnerCredentials
-        class TokenHandler < OAuth2::Client::TokenHandler
+        class TokenHandler < OAuth2c::TokenHandler
           def initialize(username, password)
             @username = username
             @password = password

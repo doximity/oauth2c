@@ -1,8 +1,8 @@
 require "spec_helper"
 
-RSpec.describe OAuth2::Client::Agent do
+RSpec.describe OAuth2c::Agent do
   subject do
-    described_class.new("http://authz.test", "CLIENT_ID", "CLIENT_SECRET")
+    described_class.new("http://authz.test/oauth", "CLIENT_ID", "CLIENT_SECRET")
   end
 
   class CustomStrategy
@@ -45,9 +45,9 @@ RSpec.describe OAuth2::Client::Agent do
   end
 
   it "fetches a token based on the strategy" do
-    stub_request(:post, "http://authz.test/token")
+    stub_request(:post, "http://authz.test/oauth/token")
       .with(
-        body: JSON.dump(grant_type: "custom", custom_code: "123"),
+        body: "grant_type=custom&custom_code=123",
         headers: { "Accept": "application/json", "Authorization": "Basic Q0xJRU5UX0lEOkNMSUVOVF9TRUNSRVQ=", "Content-Type": "application/x-www-form-urlencoded; encoding=UTF-8"}
       )
       .to_return(

@@ -2,7 +2,7 @@ module OAuth2
   module Client
     module Strategies
       module ClientCredentials
-        class TokenHandler < OAuth2::Client::AuthzHandler
+        class TokenHandler < OAuth2c::AuthzHandler
           def grant_type
             "client_credentials"
           end

@@ -1,17 +1,17 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'oauth2/client/version'
+require 'oauth2c/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "oauth2-client"
-  spec.version       = OAuth2::Client::VERSION
+  spec.name          = "oauth2c"
+  spec.version       = OAuth2c::VERSION
   spec.authors       = ["Rodrigo Kochenburger"]
   spec.email         = ["divoxx@gmail.com"]
 
-  spec.summary       = %q{OAuth2 client implementation}
+  spec.summary       = %q{OAuth2 client implementation with modular approach, allowing for custom strategies, and CLI tool}
   spec.description   = %q{OAuth2 client implementation with modular approach, allowing for custom strategies, and CLI tool}
-  spec.homepage      = "https://github.com/divoxx/oauth2-client"
+  spec.homepage      = "https://github.com/doximity/oauth2c"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
+
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]

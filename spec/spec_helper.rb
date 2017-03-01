@@ -1,6 +1,6 @@
 require "bundler/setup"
 require "webmock/rspec"
-require "oauth2/client"
+require "oauth2c"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
