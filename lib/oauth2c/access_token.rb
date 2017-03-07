@@ -19,19 +19,17 @@ module OAuth2c
       :expires_in,
       :expires_at,
       :refresh_token,
-      :extra_params,
+      :extra,
     )
 
-    def initialize(attrs)
-      attrs = attrs.dup
+    def initialize(access_token:, token_type:, expires_in:, refresh_token: nil, **extra)
+      @access_token  = access_token
+      @token_type    = token_type
+      @expires_in    = Integer(expires_in)
+      @refresh_token = refresh_token
+      @extra         = extra
 
-      @access_token  = attrs.delete("access_token")
-      @token_type    = attrs.delete("token_type")
-      @expires_in    = attrs.delete("expires_in")
-      @refresh_token = attrs.delete("refresh_token")
-      @extra_params  = attrs
-
-      @expires_at = (Time.respond_to?(:zone) ? Time.zone.now : Time.now) + @expires_in
+      @expires_at = Time.now + @expires_in
     end
 
     def attributes
@@ -41,8 +39,16 @@ module OAuth2c
         expires_in: @expires_in,
         expires_at: @expires_at,
         refresh_token: @refresh_token,
-        extra_params: @extra_params,
+        extra: @extra,
       }
+    end
+
+    def ==(other)
+      access_token == other.access_token &&
+      token_type == other.token_type &&
+      expires_in == other.expires_in &&
+      refresh_token == other.refresh_token &&
+      extra == other.extra
     end
   end
 end

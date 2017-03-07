@@ -19,14 +19,28 @@ module OAuth2c
   module Strategies
     class Assertion < OAuth2c::TwoLegged::Base
       class JWTProfile
-        def initialize(alg, iss:, sub:, aud:, exp:, nbf: Time.zone.now, iat: jti: SecureRandom.uuid, **other_claims)
+        def initialize(alg, key,
+            iss:,
+            aud:,
+            sub:,
+            jti: SecureRandom.uuid,
+            exp: Time.now + (5 * 60),
+            nbf: Time.now,
+            iat: Time.now,
+            **other_claims
+        )
+          @alg = alg
+          @key = key
+
           @iss = iss
-          @sub = sub
           @aud = aud
+          @sub = sub
+          @jti = jti
           @exp = exp
           @nbf = nbf
           @iat = iat
-          @other_claims = **other_claims
+
+          @other_claims = other_claims
         end
 
         def grant_type
@@ -34,10 +48,24 @@ module OAuth2c
         end
 
         def assertion
+          JWT.encode(claims, @key, @alg)
+        end
+
+        def claims
+          {
+            iss: @iss,
+            sub: @sub,
+            aud: @aud,
+            jti: @jti,
+            exp: @exp && @exp.utc.to_i,
+            nbf: @nbf && @nbf.utc.to_i,
+            iat: @iat && @iat.utc.to_i,
+            **@other_claims,
+          }
         end
       end
 
-      def initialize(client, profile:)
+      def initialize(client, profile)
         super(client)
         @profile = profile
       end

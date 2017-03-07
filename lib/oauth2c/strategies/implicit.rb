@@ -14,9 +14,12 @@
 
 module OAuth2c
   module Strategies
-    class Implicit < OAuth2::ThreeLegged::Base
-      def token(params)
-        AccessToken.new(params)
+    class Implicit < OAuth2c::ThreeLegged::Base
+      using Refinements
+
+      def token(callback_url)
+        _, fragment_params = parse_callback_url(callback_url)
+        AccessToken.new(**fragment_params)
       end
 
       protected

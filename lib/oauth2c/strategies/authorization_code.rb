@@ -21,7 +21,7 @@ module OAuth2c
         { response_type: "code" }
       end
 
-      def token_params(code:)
+      def token_params(code:, **_)
         { grant_type: "authorization_code", code: code }
       end
     end

@@ -12,20 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module OAuth2c
-  module Strategies
-    class ResourceOwnerCredentials < OAuth2c::TwoLegged::Base
-      def initialize(client, username, password)
-        super(client)
-        @username = username
-        @password = password
-      end
+require "spec_helper"
 
-      protected
+RSpec.describe OAuth2c::Strategies::ResourceOwnerCredentials do
+  subject do
+    described_class.new(client, "username", "password")
+  end
 
-      def token_params
-        { grant_type: "password", username: @username, password: @password }
-      end
-    end
+  let :client do
+    instance_double(OAuth2c::Client)
+  end
+
+  it "performs request to token endpoint" do
+    access_token = double(:access_token)
+
+    expect(client).to receive(:token).with(
+      grant_type: "password",
+      username: "username",
+      password: "password",
+      scope: [],
+    ).and_return(access_token)
+
+    expect(subject.token).to eq(access_token)
   end
 end

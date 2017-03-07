@@ -14,26 +14,22 @@
 
 module OAuth2c
   module ThreeLegged
+    using Refinements
+
     class Base
-      def initialize(client, state)
+      def initialize(client, state, scope: [])
         @client = client
         @state  = state
+        @scope  = scope
       end
 
       def authz_url
-        @client.authz_url(authz_params)
+        @client.authz_url(state: @state, scope: @scope, **authz_params)
       end
 
       def token(callback_url)
-        uri    = URI.parse(callback_url)
-        params = Hash[URI.decode_www_form(uri.query.to_s)]
-
-        token_args = {}
-        token_params_keys.each do |key|
-          token_args[key] = params[key.to_s]
-        end
-
-        @client.token(**token_args)
+        query_params, _ = parse_callback_url(callback_url)
+        @client.token(**token_params(query_params))
       end
 
       protected
@@ -46,14 +42,13 @@ module OAuth2c
         raise NotImplementedError
       end
 
-      def token_params_keys
-        return @_token_params_keys if defined?(@_token_params_keys)
+      def parse_callback_url(callback_url)
+        uri = URI.parse(callback_url)
 
-        @token_params_keys = method(:token_params).parameters.map do |(type, name)|
-          if type == :key || type == :keyreq
-            name
-          end
-        end.compact
+        query_params    = Hash[URI.decode_www_form(uri.query.to_s)].symbolize_keys
+        fragment_params = Hash[URI.decode_www_form(uri.fragment.to_s)].symbolize_keys
+
+        [query_params, fragment_params]
       end
     end
   end

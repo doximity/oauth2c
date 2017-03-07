@@ -14,6 +14,7 @@
 
 require "bundler/setup"
 require "webmock/rspec"
+require "byebug"
 require "oauth2c"
 
 RSpec.configure do |config|

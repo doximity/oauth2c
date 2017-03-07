@@ -17,6 +17,7 @@ module OAuth2c
   autoload :CLI,          "oauth2c/cli"
   autoload :Client,       "oauth2c/client"
   autoload :Error,        "oauth2c/error"
+  autoload :Refinements,  "oauth2c/refinements"
   autoload :Strategies,   "oauth2c/strategies"
   autoload :ThreeLegged,  "oauth2c/three_legged"
   autoload :TwoLegged,    "oauth2c/two_legged"
