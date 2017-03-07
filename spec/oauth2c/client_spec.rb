@@ -14,54 +14,26 @@
 
 require "spec_helper"
 
-RSpec.describe OAuth2c::Agent do
+RSpec.describe OAuth2c::Client do
   subject do
-    described_class.new("http://authz.test/oauth/authorize", "http://authz.test/oauth/token", "CLIENT_ID", "CLIENT_SECRET")
-  end
-
-  class CustomStrategy
-    class AuthzHandler
-      def response_type
-        "custom"
-      end
-
-      def extra_params
-        { custom: "foobar" }
-      end
-    end
-
-    class TokenHandler
-      def initialize(callback_params)
-        @callback_params = callback_params
-      end
-
-      def grant_type
-        "custom"
-      end
-
-      def extra_params
-        { custom_code: @callback_params[:custom_code] }
-      end
-    end
-  end
-
-  let :authz_handler do
-    CustomStrategy::AuthzHandler.new
-  end
-
-  let :token_handler do
-    CustomStrategy::TokenHandler.new(custom_code: "123")
+    described_class.new(
+      authz_url:     "http://authz.test/oauth/authorize",
+      token_url:     "http://authz.test/oauth/token",
+      client_id:     "CLIENT_ID",
+      client_secret: "CLIENT_SECRET",
+      redirect_uri:  "http://client.test/callback",
+    )
   end
 
   it "generates an authorization url for a strategy that supports it" do
-    url = subject.authz_url(authz_handler, redirect_uri: "http://client.test", scope: ["basic", "email"], state: "DVX0")
-    expect(url).to eq("http://authz.test/oauth/authorize?response_type=custom&client_id=CLIENT_ID&redirect_uri=http%3A%2F%2Fclient.test&scope=basic+email&state=DVX0&custom=foobar")
+    url = subject.authz_url(response_type: "custom", state: "DVX0", scope: ["basic", "email"])
+    expect(url).to eq("http://authz.test/oauth/authorize?client_id=CLIENT_ID&redirect_uri=http%3A%2F%2Fclient.test%2Fcallback&response_type=custom&state=DVX0&scope=basic+email")
   end
 
   it "fetches a token based on the strategy" do
     stub_request(:post, "http://authz.test/oauth/token")
       .with(
-        body: "grant_type=custom&custom_code=123",
+        body: "grant_type=custom&scope=basic+email&custom_code=123",
         headers: { "Accept": "application/json", "Authorization": "Basic Q0xJRU5UX0lEOkNMSUVOVF9TRUNSRVQ=", "Content-Type": "application/x-www-form-urlencoded; encoding=UTF-8"}
       )
       .to_return(
@@ -76,7 +48,7 @@ RSpec.describe OAuth2c::Agent do
         ),
       )
 
-    token = subject.token(token_handler)
+    token = subject.token(grant_type: "custom", custom_code: "123", scope: ["basic", "email"])
     expect(token.access_token).to eq("2YotnFZFEjr1zCsicMWpAA")
     expect(token.token_type).to eq("Bearer")
     expect(token.expires_in).to eq(3600)

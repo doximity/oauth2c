@@ -13,13 +13,21 @@
 # limitations under the License.
 
 module OAuth2c
-  class AuthzHandler
-    def response_type
-      raise NotImplementedError
-    end
+  module TwoLegged
+    class Base
+      def initialize(client)
+        @client = client
+      end
 
-    def extra_params
-      {}
+      def token
+        @client.token(token_params)
+      end
+
+      protected
+
+      def token_params
+        raise NotImplementedError
+      end
     end
   end
 end

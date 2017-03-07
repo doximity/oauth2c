@@ -11,31 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 module OAuth2c
   module Strategies
-    module AuthorizationCode
-      class AuthzHandler < OAuth2c::AuthzHandler
-        def response_type
-          "code"
-        end
+    class AuthorizationCode < ThreeLegged::Base
+      protected
+
+      def authz_params
+        { response_type: "code" }
       end
 
-      class TokenHandler < OAuth2c::TokenHandler
-        def self.from_authz_callback_params(params)
-          new(params["code"])
-        end
-
-        def initialize(code)
-          @code = code
-        end
-
-        def grant_type
-          "authorization_code"
-        end
-
-        def extra_params
-          { code: @code }
-        end
+      def token_params(code:)
+        { grant_type: "authorization_code", code: code }
       end
     end
   end

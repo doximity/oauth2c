@@ -11,13 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 module OAuth2c
   module Strategies
-    module Implicit
-      class AuthzHandler < OAuth2c::AuthzHandler
-        def response_type
-          "token"
-        end
+    class Implicit < OAuth2::ThreeLegged::Base
+      def token(params)
+        AccessToken.new(params)
+      end
+
+      protected
+
+      def authz_params
+        { response_type: "token" }
       end
     end
   end

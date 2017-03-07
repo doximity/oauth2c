@@ -17,13 +17,15 @@ require "http"
 require "json"
 
 module OAuth2c
-  class Agent
-    def initialize(authz_url, token_url, client_id, client_secret)
-      @authz_url = authz_url.chomp("/")
-      @token_url = token_url.chomp("/")
+  class Client
+    ConfigError = Class.new(StandardError)
 
+    def initialize(authz_url: nil, token_url:, client_id:, client_secret: nil, redirect_uri: nil)
+      @authz_url     = authz_url && authz_url.chomp("/")
+      @token_url     = token_url && token_url.chomp("/")
       @client_id     = client_id
       @client_secret = client_secret
+      @redirect_uri  = redirect_uri
 
       @http_client = HTTP.nodelay
         .basic_auth(user: @client_id, pass: @client_secret)
@@ -31,14 +33,22 @@ module OAuth2c
         .headers("Content-Type": "application/x-www-form-urlencoded; encoding=UTF-8")
     end
 
-    def authz_url(authz_handler, redirect_uri:, scope:, state: nil)
+    def authz_url(response_type:, state:, scope: [], **params)
+      if @authz_url.nil?
+        raise ConfigError, "authz_url not informed for client"
+      end
+
+      if @redirect_uri.nil?
+        raise ConfigError, "redirect_uri not informed for client"
+      end
+
       params = {
-        response_type: authz_handler.response_type,
         client_id: @client_id,
-        redirect_uri: redirect_uri,
-        scope: normalize_scope(scope),
+        redirect_uri: @redirect_uri,
+        response_type: response_type,
         state: state,
-        **authz_handler.extra_params,
+        scope: normalize_scope(scope),
+        **params
       }
 
       url = URI.parse(@authz_url)
@@ -46,15 +56,12 @@ module OAuth2c
       url.to_s
     end
 
-    def token(token_handler, redirect_uri: nil)
+    def token(grant_type:, scope: [], **params)
       params = {
-        grant_type: token_handler.grant_type,
-        **token_handler.extra_params,
+        grant_type: grant_type,
+        scope: normalize_scope(scope),
+        **params,
       }
-
-      unless redirect_uri.nil?
-        params[:redirect_uri] = redirect_uri
-      end
 
       response = @http_client.post(@token_url, body: URI.encode_www_form(params))
 
@@ -70,12 +77,12 @@ module OAuth2c
 
     def normalize_scope(scope)
       case scope
+      when "", [], NilClass
+        nil
       when String
         scope
       when Array
         scope.join(" ")
-      when NilClass
-        []
       else
         raise ArgumentError, "invalid scope: #{scope.inspect}"
       end

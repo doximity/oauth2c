@@ -11,23 +11,38 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 module OAuth2c
   module Strategies
-    module ResourceOwnerCredentials
-      class TokenHandler < OAuth2c::TokenHandler
-        def initialize(username, password)
-          @username = username
-          @password = password
-        end
+    class ResourceOwnerCredentials < OAuth2c::TwoLegged::Base
+      def initialize(client, username:, password:)
+        super(client)
+        @username = username
+        @password = password
+      end
 
-        def grant_type
-          "password"
-        end
+      protected
 
-        def extra_params
-          { username: @username, password: @password }
-        end
+      def token_params
+        { grant_type: "password", username: @username, password: @password }
       end
     end
+
+    # module ResourceOwnerCredentials
+    #   class TokenHandler < OAuth2c::TokenHandler
+    #     def initialize(username, password)
+    #       @username = username
+    #       @password = password
+    #     end
+
+    #     def grant_type
+    #       "password"
+    #     end
+
+    #     def extra_params
+    #       { username: @username, password: @password }
+    #     end
+    #   end
+    # end
   end
 end

@@ -11,13 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 module OAuth2c
   module Strategies
-    module ClientCredentials
-      class TokenHandler < OAuth2c::AuthzHandler
-        def grant_type
-          "client_credentials"
-        end
+    class ClientCredentials < OAuth2c::TwoLegged::Base
+      protected
+
+      def token_params
+        { grant_type: "client_credentials" }
       end
     end
   end

@@ -14,11 +14,11 @@
 
 module OAuth2c
   autoload :AccessToken,  "oauth2c/access_token"
-  autoload :Agent,        "oauth2c/agent"
-  autoload :AuthzHandler, "oauth2c/authz_handler"
   autoload :CLI,          "oauth2c/cli"
+  autoload :Client,       "oauth2c/client"
   autoload :Error,        "oauth2c/error"
   autoload :Strategies,   "oauth2c/strategies"
-  autoload :TokenHandler, "oauth2c/token_handler"
+  autoload :ThreeLegged,  "oauth2c/three_legged"
+  autoload :TwoLegged,    "oauth2c/two_legged"
   autoload :VERSION,      "oauth2c/version"
 end
