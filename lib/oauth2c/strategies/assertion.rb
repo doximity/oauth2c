@@ -12,19 +12,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require "securerandom"
+require "jwt"
+
 module OAuth2c
   module Strategies
-    class ResourceOwnerCredentials < OAuth2c::TwoLegged::Base
-      def initialize(client, username:, password:)
+    class Assertion < OAuth2c::TwoLegged::Base
+      class JWTProfile
+        def initialize(alg, iss:, sub:, aud:, exp:, nbf: Time.zone.now, iat: jti: SecureRandom.uuid, **other_claims)
+          @iss = iss
+          @sub = sub
+          @aud = aud
+          @exp = exp
+          @nbf = nbf
+          @iat = iat
+          @other_claims = **other_claims
+        end
+
+        def grant_type
+          "urn:ietf:params:oauth:grant-type:jwt-bearer"
+        end
+
+        def assertion
+        end
+      end
+
+      def initialize(client, profile:)
         super(client)
-        @username = username
-        @password = password
+        @profile = profile
       end
 
       protected
 
       def token_params
-        { grant_type: "password", username: @username, password: @password }
+        { grant_type: @profile.grant_type, assertion: @profile.assertion }
       end
     end
   end

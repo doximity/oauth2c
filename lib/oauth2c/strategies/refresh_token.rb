@@ -14,10 +14,17 @@
 
 module OAuth2c
   module Strategies
-    autoload :AuthorizationCode,        "oauth2c/strategies/authorization_code"
-    autoload :ClientCredentials,        "oauth2c/strategies/client_credentials"
-    autoload :Implicit,                 "oauth2c/strategies/implicit"
-    autoload :RefreshToken,             "oauth2c/strategies/refresh_token"
-    autoload :ResourceOwnerCredentials, "oauth2c/strategies/resource_owner_credentials"
+    class RefreshToken < OAuth2c::TwoLegged::Base
+      def initialize(client, refresh_token:)
+        super(client)
+        @refresh_token = refresh_token
+      end
+
+      protected
+
+      def token_params
+        { grant_type: "refresh_token", refresh_token: @refresh_token }
+      end
+    end
   end
 end
