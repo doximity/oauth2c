@@ -14,8 +14,7 @@
 
 module OAuth2c
   autoload :AccessToken,  "oauth2c/access_token"
-  autoload :CLI,          "oauth2c/cli"
-  autoload :Client,       "oauth2c/client"
+  autoload :Agent,        "oauth2c/agent"
   autoload :Error,        "oauth2c/error"
   autoload :Refinements,  "oauth2c/refinements"
   autoload :Strategies,   "oauth2c/strategies"

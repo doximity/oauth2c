@@ -16,11 +16,11 @@ require "spec_helper"
 
 RSpec.describe OAuth2c::Strategies::AuthorizationCode do
   subject do
-    described_class.new(client, "STATE")
+    described_class.new(agent, "STATE")
   end
 
-  let :client do
-    instance_double(OAuth2c::Client)
+  let :agent do
+    instance_double(OAuth2c::Agent)
   end
 
   let :url do
@@ -28,7 +28,7 @@ RSpec.describe OAuth2c::Strategies::AuthorizationCode do
   end
 
   it "generates authz url" do
-    expect(client).to receive(:authz_url).with(
+    expect(agent).to receive(:authz_url).with(
       response_type: "code",
       state: "STATE",
       scope: [],
@@ -45,7 +45,7 @@ RSpec.describe OAuth2c::Strategies::AuthorizationCode do
       refresh_token: "REFRESH_TOKEN",
     )
 
-    expect(client).to receive(:token).with(
+    expect(agent).to receive(:token).with(
       grant_type: "authorization_code",
       code: "CODE",
     ).and_return(token)

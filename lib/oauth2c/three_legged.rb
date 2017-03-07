@@ -17,19 +17,19 @@ module OAuth2c
     using Refinements
 
     class Base
-      def initialize(client, state, scope: [])
-        @client = client
+      def initialize(agent, state, scope: [])
+        @agent = agent
         @state  = state
         @scope  = scope
       end
 
       def authz_url
-        @client.authz_url(state: @state, scope: @scope, **authz_params)
+        @agent.authz_url(state: @state, scope: @scope, **authz_params)
       end
 
       def token(callback_url)
         query_params, _ = parse_callback_url(callback_url)
-        @client.token(**token_params(query_params))
+        @agent.token(**token_params(query_params))
       end
 
       protected

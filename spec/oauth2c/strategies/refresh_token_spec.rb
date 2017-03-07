@@ -16,17 +16,17 @@ require "spec_helper"
 
 RSpec.describe OAuth2c::Strategies::RefreshToken do
   subject do
-    described_class.new(client, "refresh-token")
+    described_class.new(agent, "refresh-token")
   end
 
-  let :client do
-    instance_double(OAuth2c::Client)
+  let :agent do
+    instance_double(OAuth2c::Agent)
   end
 
   it "performs request to token endpoint" do
     access_token = double(:access_token)
 
-    expect(client).to receive(:token).with(
+    expect(agent).to receive(:token).with(
       grant_type: "refresh_token",
       refresh_token: "refresh-token",
       scope: [],

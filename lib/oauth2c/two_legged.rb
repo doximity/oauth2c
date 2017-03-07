@@ -15,13 +15,13 @@
 module OAuth2c
   module TwoLegged
     class Base
-      def initialize(client, scope: [])
-        @client = client
-        @scope  = scope
+      def initialize(agent, scope: [])
+        @agent = agent
+        @scope = scope
       end
 
       def token
-        @client.token({ **token_params, scope: @scope })
+        @agent.token({ **token_params, scope: @scope })
       end
 
       protected

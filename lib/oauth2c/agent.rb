@@ -17,7 +17,7 @@ require "http"
 require "json"
 
 module OAuth2c
-  class Client
+  class Agent
     using Refinements
 
     ConfigError = Class.new(StandardError)

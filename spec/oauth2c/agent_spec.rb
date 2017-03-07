@@ -14,7 +14,7 @@
 
 require "spec_helper"
 
-RSpec.describe OAuth2c::Client do
+RSpec.describe OAuth2c::Agent do
   subject do
     described_class.new(
       authz_url:     "http://authz.test/oauth/authorize",

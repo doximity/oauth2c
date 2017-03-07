@@ -15,8 +15,8 @@
 module OAuth2c
   module Strategies
     class ResourceOwnerCredentials < OAuth2c::TwoLegged::Base
-      def initialize(client, username, password)
-        super(client)
+      def initialize(agent, username, password)
+        super(agent)
         @username = username
         @password = password
       end

@@ -16,11 +16,11 @@ require "spec_helper"
 
 RSpec.describe OAuth2c::Strategies::Assertion do
   subject do
-    described_class.new(client, profile)
+    described_class.new(agent, profile)
   end
 
-  let :client do
-    instance_double(OAuth2c::Client)
+  let :agent do
+    instance_double(OAuth2c::Agent)
   end
 
   context "with JWT profile" do
@@ -39,7 +39,7 @@ RSpec.describe OAuth2c::Strategies::Assertion do
     it "performs request to token endpoint" do
       access_token = double(:access_token)
 
-      expect(client).to receive(:token).with(
+      expect(agent).to receive(:token).with(
         grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
         assertion: JWTMatcher.new("HS512", "MYKEY", profile.claims),
         scope: [],

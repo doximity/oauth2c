@@ -65,8 +65,8 @@ module OAuth2c
         end
       end
 
-      def initialize(client, profile)
-        super(client)
+      def initialize(agent, profile)
+        super(agent)
         @profile = profile
       end
 

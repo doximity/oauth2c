@@ -16,11 +16,11 @@ require "spec_helper"
 
 RSpec.describe OAuth2c::Strategies::Implicit do
   subject do
-    described_class.new(client, "STATE")
+    described_class.new(agent, "STATE")
   end
 
-  let :client do
-    instance_double(OAuth2c::Client)
+  let :agent do
+    instance_double(OAuth2c::Agent)
   end
 
   let :url do
@@ -28,7 +28,7 @@ RSpec.describe OAuth2c::Strategies::Implicit do
   end
 
   it "generates authz url" do
-    expect(client).to receive(:authz_url).with(
+    expect(agent).to receive(:authz_url).with(
       response_type: "token",
       state: "STATE",
       scope: [],

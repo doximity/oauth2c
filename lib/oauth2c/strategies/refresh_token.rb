@@ -15,8 +15,8 @@
 module OAuth2c
   module Strategies
     class RefreshToken < OAuth2c::TwoLegged::Base
-      def initialize(client, refresh_token)
-        super(client)
+      def initialize(agent, refresh_token)
+        super(agent)
         @refresh_token = refresh_token
       end
 
