@@ -18,6 +18,8 @@ require "json"
 
 module OAuth2c
   class Client
+    using Refinements
+
     ConfigError = Class.new(StandardError)
 
     def initialize(authz_url: nil, token_url:, client_id:, client_secret: nil, redirect_uri: nil)
@@ -66,7 +68,8 @@ module OAuth2c
       response = @http_client.post(@token_url, body: URI.encode_www_form(params))
 
       if response.status.success?
-        AccessToken.new(JSON.parse(response.body))
+        access_token_attrs = JSON.parse(response.body).symbolize_keys
+        AccessToken.new(**access_token_attrs)
       else
         json = JSON.parse(response.body)
         raise Error.new(json["error"], json["error_description"])

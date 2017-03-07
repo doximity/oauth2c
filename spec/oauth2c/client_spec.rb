@@ -53,6 +53,6 @@ RSpec.describe OAuth2c::Client do
     expect(token.token_type).to eq("Bearer")
     expect(token.expires_in).to eq(3600)
     expect(token.refresh_token).to eq("tGzv3JOkF0XG5Qx2TlKWIA")
-    expect(token.extra_params).to eq("example_parameter" => "example_value")
+    expect(token.extra).to eq(example_parameter: "example_value")
   end
 end
