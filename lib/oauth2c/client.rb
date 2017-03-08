@@ -12,27 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "spec_helper"
+module OAuth2c
+  class Client
+    using Refinements
 
-RSpec.describe OAuth2c::Strategies::ResourceOwnerCredentials do
-  subject do
-    described_class.new(agent, username: "username", password: "password")
-  end
+    def initialize(authz_url: nil, token_url:, client_id:, client_secret: nil, redirect_uri: nil)
+      @agent = Agent.new(
+        authz_url: authz_url,
+        token_url: token_url,
+        client_id: client_id,
+        client_secret: client_secret,
+        redirect_uri: redirect_uri,
+      )
+    end
 
-  let :agent do
-    instance_double(OAuth2c::Agent)
-  end
-
-  it "performs request to token endpoint" do
-    access_token = double(:access_token)
-
-    expect(agent).to receive(:token).with(
-      grant_type: "password",
-      username: "username",
-      password: "password",
-      scope: [],
-    ).and_return(access_token)
-
-    expect(subject.token).to eq(access_token)
+    def method_missing(name, *args, **opts)
+      Strategies.const_get(name.to_s.camelize).new(@agent, **opts)
+    end
   end
 end

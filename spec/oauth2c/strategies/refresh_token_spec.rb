@@ -16,7 +16,7 @@ require "spec_helper"
 
 RSpec.describe OAuth2c::Strategies::RefreshToken do
   subject do
-    described_class.new(agent, "refresh-token")
+    described_class.new(agent, refresh_token: "refresh-token")
   end
 
   let :agent do

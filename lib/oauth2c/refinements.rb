@@ -1,5 +1,11 @@
 module OAuth2c
   module Refinements
+    refine String do
+      def camelize
+        gsub(/(?:\A|_)([a-z])/) { $1.upcase }
+      end
+    end
+
     refine Hash do
       def slice(*keys)
         keys.map! { |key| convert_key(key) } if respond_to?(:convert_key, true)
