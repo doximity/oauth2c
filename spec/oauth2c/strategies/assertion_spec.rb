@@ -37,15 +37,20 @@ RSpec.describe OAuth2c::Strategies::Assertion do
     end
 
     it "performs request to token endpoint" do
-      access_token = double(:access_token)
+      token_payload = {
+        access_token: "ACCESS_TOKEN",
+        token_type: "bearer",
+        expires_in: 3600,
+        refresh_token: "REFRESH_TOKEN",
+      }
 
       expect(agent).to receive(:token).with(
         grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
         assertion: JWTMatcher.new("HS512", "MYKEY", profile.claims),
         scope: [],
-      ).and_return(access_token)
+      ).and_return([ true, token_payload ])
 
-      expect(subject.token).to eq(access_token)
+      expect(subject.token).to eq(OAuth2c::AccessToken.new(token_payload))
     end
 
     class JWTMatcher

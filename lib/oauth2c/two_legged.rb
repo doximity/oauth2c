@@ -15,6 +15,8 @@
 module OAuth2c
   module TwoLegged
     class Base
+      using Refinements
+
       def initialize(agent, scope: [])
         @agent = agent
         @scope = scope
