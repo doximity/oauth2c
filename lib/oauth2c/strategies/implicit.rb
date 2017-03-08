@@ -18,8 +18,9 @@ module OAuth2c
       using Refinements
 
       def token(callback_url)
-        _, fragment_params = parse_callback_url(callback_url)
-        AccessToken.new(**fragment_params)
+        super(callback_url) do |_, fragment_params|
+          AccessToken.new(**fragment_params)
+        end
       end
 
       protected

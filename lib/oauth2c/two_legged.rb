@@ -21,13 +21,22 @@ module OAuth2c
       end
 
       def token
-        @agent.token({ **token_params, scope: @scope })
+        ok, response = @agent.token({ **token_params, scope: @scope })
+        handle_token_response(ok, response)
       end
 
       protected
 
       def token_params
         raise NotImplementedError
+      end
+
+      def handle_token_response(ok, response)
+        if ok
+          AccessToken.new(**response.symbolize_keys)
+        else
+          raise Error.new(response["error"], response["error_description"])
+        end
       end
     end
   end

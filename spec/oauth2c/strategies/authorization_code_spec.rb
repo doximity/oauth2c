@@ -16,7 +16,7 @@ require "spec_helper"
 
 RSpec.describe OAuth2c::Strategies::AuthorizationCode do
   subject do
-    described_class.new(agent, "STATE")
+    described_class.new(agent, state: "STATE")
   end
 
   let :agent do
@@ -38,18 +38,19 @@ RSpec.describe OAuth2c::Strategies::AuthorizationCode do
   end
 
   it "issues a token from the URL" do
-    token = OAuth2c::AccessToken.new(
+    token_payload = {
       access_token: "ACCESS_TOKEN",
       token_type: "bearer",
       expires_in: 3600,
       refresh_token: "REFRESH_TOKEN",
-    )
+    }
 
     expect(agent).to receive(:token).with(
       grant_type: "authorization_code",
       code: "CODE",
-    ).and_return(token)
+      include_redirect_uri: true,
+    ).and_return([true, token_payload])
 
-    expect(subject.token(url)).to eq(token)
+    expect(subject.token(url)).to eq(OAuth2c::AccessToken.new(token_payload))
   end
 end

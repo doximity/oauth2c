@@ -48,11 +48,13 @@ RSpec.describe OAuth2c::Agent do
         ),
       )
 
-    token = subject.token(grant_type: "custom", custom_code: "123", scope: ["basic", "email"])
-    expect(token.access_token).to eq("2YotnFZFEjr1zCsicMWpAA")
-    expect(token.token_type).to eq("Bearer")
-    expect(token.expires_in).to eq(3600)
-    expect(token.refresh_token).to eq("tGzv3JOkF0XG5Qx2TlKWIA")
-    expect(token.extra).to eq(example_parameter: "example_value")
+    ok, token = subject.token(grant_type: "custom", custom_code: "123", scope: ["basic", "email"])
+    expect(ok).to be_truthy
+
+    expect(token["access_token"]).to eq("2YotnFZFEjr1zCsicMWpAA")
+    expect(token["token_type"]).to eq("Bearer")
+    expect(token["expires_in"]).to eq(3600)
+    expect(token["refresh_token"]).to eq("tGzv3JOkF0XG5Qx2TlKWIA")
+    expect(token["example_parameter"]).to eq("example_value")
   end
 end

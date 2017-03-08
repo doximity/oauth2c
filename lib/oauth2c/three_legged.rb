@@ -16,11 +16,13 @@ module OAuth2c
   module ThreeLegged
     using Refinements
 
+    InvalidStateError = Class.new(StandardError)
+
     class Base
-      def initialize(agent, state, scope: [])
+      def initialize(agent, state:, scope: [])
         @agent = agent
-        @state  = state
-        @scope  = scope
+        @state = state
+        @scope = scope
       end
 
       def authz_url
@@ -28,8 +30,22 @@ module OAuth2c
       end
 
       def token(callback_url)
-        query_params, _ = parse_callback_url(callback_url)
-        @agent.token(**token_params(query_params))
+        query_params, fragment_params = parse_callback_url(callback_url)
+
+        if query_params[:error]
+          raise Error.new(query_params[:error], query_params[:error_description])
+        end
+
+        if query_params[:state] != @state
+          raise InvalidStateError, "callback url state mismatch"
+        end
+
+        if block_given?
+          yield(query_params, fragment_params)
+        else
+          ok, response = @agent.token(include_redirect_uri: true, **token_params(query_params))
+          handle_token_response(ok, response)
+        end
       end
 
       protected
@@ -49,6 +65,14 @@ module OAuth2c
         fragment_params = Hash[URI.decode_www_form(uri.fragment.to_s)].symbolize_keys
 
         [query_params, fragment_params]
+      end
+
+      def handle_token_response(ok, response)
+        if ok
+          AccessToken.new(**response.symbolize_keys)
+        else
+          raise Error.new(response["error"], response["error_description"])
+        end
       end
     end
   end

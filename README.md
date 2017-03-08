@@ -7,7 +7,7 @@ TODO: Write description
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'oauth2-client'
+gem 'oauth2c'
 ```
 
 And then execute:

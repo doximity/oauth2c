@@ -16,7 +16,7 @@ require "spec_helper"
 
 RSpec.describe OAuth2c::Strategies::Implicit do
   subject do
-    described_class.new(agent, "STATE")
+    described_class.new(agent, state: "STATE")
   end
 
   let :agent do
@@ -24,7 +24,7 @@ RSpec.describe OAuth2c::Strategies::Implicit do
   end
 
   let :url do
-    "http://resourceowner.test/callback#access_token=ACCESS_TOKEN&token_type=bearer&expires_in=3600&refresh_token=REFRESH_TOKEN"
+    "http://resourceowner.test/callback?state=STATE#access_token=ACCESS_TOKEN&token_type=bearer&expires_in=3600&refresh_token=REFRESH_TOKEN"
   end
 
   it "generates authz url" do

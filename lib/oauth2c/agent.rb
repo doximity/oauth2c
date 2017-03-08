@@ -58,22 +58,20 @@ module OAuth2c
       url.to_s
     end
 
-    def token(grant_type:, scope: [], **params)
+    def token(grant_type:, scope: [], include_redirect_uri: false, **params)
       params = {
         grant_type: grant_type,
         scope: normalize_scope(scope),
         **params,
       }
 
+      if include_redirect_uri
+        params[:redirect_uri] = @redirect_uri
+      end
+
       response = @http_client.post(@token_url, body: URI.encode_www_form(params))
 
-      if response.status.success?
-        access_token_attrs = JSON.parse(response.body).symbolize_keys
-        AccessToken.new(**access_token_attrs)
-      else
-        json = JSON.parse(response.body)
-        raise Error.new(json["error"], json["error_description"])
-      end
+      [ response.status.success?, JSON.parse(response.body) ]
     end
 
     private
