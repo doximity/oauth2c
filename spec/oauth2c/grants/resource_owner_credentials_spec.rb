@@ -14,30 +14,16 @@
 
 require "spec_helper"
 
-RSpec.describe OAuth2c::Strategies::AuthorizationCode do
+RSpec.describe OAuth2c::Grants::ResourceOwnerCredentials do
   subject do
-    described_class.new(agent, state: "STATE")
+    described_class.new(agent, username: "username", password: "password")
   end
 
   let :agent do
     instance_double(OAuth2c::Agent)
   end
 
-  let :url do
-    "http://resourceowner.test/callback?code=CODE&state=STATE"
-  end
-
-  it "generates authz url" do
-    expect(agent).to receive(:authz_url).with(
-      response_type: "code",
-      state: "STATE",
-      scope: [],
-    ).and_return(url)
-
-    expect(subject.authz_url).to eq(url)
-  end
-
-  it "issues a token from the URL" do
+  it "performs request to token endpoint" do
     token_payload = {
       access_token: "ACCESS_TOKEN",
       token_type: "bearer",
@@ -46,11 +32,12 @@ RSpec.describe OAuth2c::Strategies::AuthorizationCode do
     }
 
     expect(agent).to receive(:token).with(
-      grant_type: "authorization_code",
-      code: "CODE",
-      include_redirect_uri: true,
-    ).and_return([true, token_payload])
+      grant_type: "password",
+      username: "username",
+      password: "password",
+      scope: [],
+    ).and_return([ true, token_payload ])
 
-    expect(subject.token(url)).to eq(OAuth2c::AccessToken.new(token_payload))
+    expect(subject.token).to eq(OAuth2c::AccessToken.new(token_payload))
   end
 end

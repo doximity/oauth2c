@@ -13,17 +13,12 @@
 # limitations under the License.
 
 module OAuth2c
-  module Strategies
-    class RefreshToken < OAuth2c::TwoLegged::Base
-      def initialize(agent, refresh_token:)
-        super(agent)
-        @refresh_token = refresh_token
-      end
-
+  module Grants
+    class ClientCredentials < OAuth2c::TwoLegged::Base
       protected
 
       def token_params
-        { grant_type: "refresh_token", refresh_token: @refresh_token }
+        { grant_type: "client_credentials" }
       end
     end
   end

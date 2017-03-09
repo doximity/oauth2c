@@ -14,9 +14,9 @@
 
 require "spec_helper"
 
-RSpec.describe OAuth2c::Strategies::Assertion do
+RSpec.describe OAuth2c::Grants::Assertion do
   subject do
-    described_class.new(agent, profile)
+    described_class.new(agent, profile: profile)
   end
 
   let :agent do
@@ -25,7 +25,7 @@ RSpec.describe OAuth2c::Strategies::Assertion do
 
   context "with JWT profile" do
     let :profile do
-      OAuth2c::Strategies::Assertion::JWTProfile.new(
+      OAuth2c::Grants::Assertion::JWTProfile.new(
         "HS512",
         "MYKEY",
         iss: "http://resourceowner.test",

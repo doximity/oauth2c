@@ -24,8 +24,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Rodrigo Kochenburger"]
   spec.email         = ["divoxx@gmail.com"]
 
-  spec.summary       = %q{OAuth2 client implementation with modular approach, allowing for custom strategies, and CLI tool}
-  spec.description   = %q{OAuth2 client implementation with modular approach, allowing for custom strategies, and CLI tool}
+  spec.summary       = %q{OAuth2c is a extensible OAuth2 client implementation}
+  spec.description   = %q{OAuth2c is a extensible OAuth2 client implementation}
   spec.homepage      = "https://github.com/doximity/oauth2c"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'

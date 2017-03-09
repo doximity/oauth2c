@@ -27,7 +27,7 @@ module OAuth2c
     end
 
     def method_missing(name, *args, **opts)
-      Strategies.const_get(name.to_s.camelize).new(@agent, **opts)
+      Grants.const_get(name.to_s.camelize).new(@agent, **opts)
     end
   end
 end

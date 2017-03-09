@@ -14,7 +14,7 @@
 
 require "spec_helper"
 
-RSpec.describe OAuth2c::Strategies::Implicit do
+RSpec.describe OAuth2c::Grants::AuthorizationCode do
   subject do
     described_class.new(agent, state: "STATE")
   end
@@ -24,12 +24,12 @@ RSpec.describe OAuth2c::Strategies::Implicit do
   end
 
   let :url do
-    "http://resourceowner.test/callback?state=STATE#access_token=ACCESS_TOKEN&token_type=bearer&expires_in=3600&refresh_token=REFRESH_TOKEN"
+    "http://resourceowner.test/callback?code=CODE&state=STATE"
   end
 
   it "generates authz url" do
     expect(agent).to receive(:authz_url).with(
-      response_type: "token",
+      response_type: "code",
       state: "STATE",
       scope: [],
     ).and_return(url)
@@ -38,13 +38,19 @@ RSpec.describe OAuth2c::Strategies::Implicit do
   end
 
   it "issues a token from the URL" do
-    expected_token = OAuth2c::AccessToken.new(
+    token_payload = {
       access_token: "ACCESS_TOKEN",
       token_type: "bearer",
       expires_in: 3600,
       refresh_token: "REFRESH_TOKEN",
-    )
+    }
 
-    expect(subject.token(url)).to eq(expected_token)
+    expect(agent).to receive(:token).with(
+      grant_type: "authorization_code",
+      code: "CODE",
+      include_redirect_uri: true,
+    ).and_return([true, token_payload])
+
+    expect(subject.token(url)).to eq(OAuth2c::AccessToken.new(token_payload))
   end
 end

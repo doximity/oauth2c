@@ -13,10 +13,17 @@
 # limitations under the License.
 
 module OAuth2c
-  module CLI
-    autoload :Config,    "oauth2c/cli/config"
-    autoload :Options,   "oauth2c/cli/options"
-    autoload :Runner,    "oauth2c/cli/runner"
-    autoload :WebServer, "oauth2c/cli/web_server"
+  module Grants
+    class AuthorizationCode < ThreeLegged::Base
+      protected
+
+      def authz_params
+        { response_type: "code" }
+      end
+
+      def token_params(code:, **_)
+        { grant_type: "authorization_code", code: code }
+      end
+    end
   end
 end

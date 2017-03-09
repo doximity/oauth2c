@@ -13,20 +13,17 @@
 # limitations under the License.
 
 module OAuth2c
-  module Strategies
-    class Implicit < OAuth2c::ThreeLegged::Base
-      using Refinements
-
-      def token(callback_url)
-        super(callback_url) do |_, fragment_params|
-          AccessToken.new(**fragment_params)
-        end
+  module Grants
+    class RefreshToken < OAuth2c::TwoLegged::Base
+      def initialize(agent, refresh_token:)
+        super(agent)
+        @refresh_token = refresh_token
       end
 
       protected
 
-      def authz_params
-        { response_type: "token" }
+      def token_params
+        { grant_type: "refresh_token", refresh_token: @refresh_token }
       end
     end
   end

@@ -13,18 +13,20 @@
 # limitations under the License.
 
 module OAuth2c
-  module Strategies
-    class ResourceOwnerCredentials < OAuth2c::TwoLegged::Base
-      def initialize(agent, username:, password:)
-        super(agent)
-        @username = username
-        @password = password
+  module Grants
+    class Implicit < OAuth2c::ThreeLegged::Base
+      using Refinements
+
+      def token(callback_url)
+        super(callback_url) do |_, fragment_params|
+          AccessToken.new(**fragment_params)
+        end
       end
 
       protected
 
-      def token_params
-        { grant_type: "password", username: @username, password: @password }
+      def authz_params
+        { response_type: "token" }
       end
     end
   end

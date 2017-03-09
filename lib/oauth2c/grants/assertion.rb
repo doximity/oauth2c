@@ -16,7 +16,7 @@ require "securerandom"
 require "jwt"
 
 module OAuth2c
-  module Strategies
+  module Grants
     class Assertion < OAuth2c::TwoLegged::Base
       class JWTProfile
         def initialize(alg, key,
@@ -65,8 +65,8 @@ module OAuth2c
         end
       end
 
-      def initialize(agent, profile)
-        super(agent)
+      def initialize(agent, profile:, **opts)
+        super(agent, **opts)
         @profile = profile
       end
 

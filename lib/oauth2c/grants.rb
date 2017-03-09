@@ -12,30 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "spec_helper"
-
-RSpec.describe OAuth2c::Strategies::ClientCredentials do
-  subject do
-    described_class.new(agent)
-  end
-
-  let :agent do
-    instance_double(OAuth2c::Agent)
-  end
-
-  it "performs request to token endpoint" do
-    token_payload = {
-      access_token: "ACCESS_TOKEN",
-      token_type: "bearer",
-      expires_in: 3600,
-      refresh_token: "REFRESH_TOKEN",
-    }
-
-    expect(agent).to receive(:token).with(
-      grant_type: "client_credentials",
-      scope: [],
-    ).and_return([ true, token_payload ])
-
-    expect(subject.token).to eq(OAuth2c::AccessToken.new(token_payload))
+module OAuth2c
+  module Grants
+    autoload :Assertion,                "oauth2c/grants/assertion"
+    autoload :AuthorizationCode,        "oauth2c/grants/authorization_code"
+    autoload :ClientCredentials,        "oauth2c/grants/client_credentials"
+    autoload :Implicit,                 "oauth2c/grants/implicit"
+    autoload :RefreshToken,             "oauth2c/grants/refresh_token"
+    autoload :ResourceOwnerCredentials, "oauth2c/grants/resource_owner_credentials"
   end
 end

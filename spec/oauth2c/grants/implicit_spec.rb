@@ -14,30 +14,37 @@
 
 require "spec_helper"
 
-RSpec.describe OAuth2c::Strategies::ResourceOwnerCredentials do
+RSpec.describe OAuth2c::Grants::Implicit do
   subject do
-    described_class.new(agent, username: "username", password: "password")
+    described_class.new(agent, state: "STATE")
   end
 
   let :agent do
     instance_double(OAuth2c::Agent)
   end
 
-  it "performs request to token endpoint" do
-    token_payload = {
+  let :url do
+    "http://resourceowner.test/callback?state=STATE#access_token=ACCESS_TOKEN&token_type=bearer&expires_in=3600&refresh_token=REFRESH_TOKEN"
+  end
+
+  it "generates authz url" do
+    expect(agent).to receive(:authz_url).with(
+      response_type: "token",
+      state: "STATE",
+      scope: [],
+    ).and_return(url)
+
+    expect(subject.authz_url).to eq(url)
+  end
+
+  it "issues a token from the URL" do
+    expected_token = OAuth2c::AccessToken.new(
       access_token: "ACCESS_TOKEN",
       token_type: "bearer",
       expires_in: 3600,
       refresh_token: "REFRESH_TOKEN",
-    }
+    )
 
-    expect(agent).to receive(:token).with(
-      grant_type: "password",
-      username: "username",
-      password: "password",
-      scope: [],
-    ).and_return([ true, token_payload ])
-
-    expect(subject.token).to eq(OAuth2c::AccessToken.new(token_payload))
+    expect(subject.token(url)).to eq(expected_token)
   end
 end

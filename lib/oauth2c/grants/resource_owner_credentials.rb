@@ -13,12 +13,19 @@
 # limitations under the License.
 
 module OAuth2c
-  module Strategies
-    autoload :Assertion,                "oauth2c/strategies/assertion"
-    autoload :AuthorizationCode,        "oauth2c/strategies/authorization_code"
-    autoload :ClientCredentials,        "oauth2c/strategies/client_credentials"
-    autoload :Implicit,                 "oauth2c/strategies/implicit"
-    autoload :RefreshToken,             "oauth2c/strategies/refresh_token"
-    autoload :ResourceOwnerCredentials, "oauth2c/strategies/resource_owner_credentials"
+  module Grants
+    class ResourceOwnerCredentials < OAuth2c::TwoLegged::Base
+      def initialize(agent, username:, password:)
+        super(agent)
+        @username = username
+        @password = password
+      end
+
+      protected
+
+      def token_params
+        { grant_type: "password", username: @username, password: @password }
+      end
+    end
   end
 end
