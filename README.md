@@ -40,7 +40,7 @@ This gem ships with following grant types:
 * [Implicit Grant](#implicit-grant) [[RFC6749](https://tools.ietf.org/html/rfc6749)]
 * [Resource Owner Password Credentials Grant](#resource-owner-password-credentials-grant) [[RFC6749](https://tools.ietf.org/html/rfc6749)]
 * [Client Credentials Grant](#client-credentials-grant) [[RFC6749](https://tools.ietf.org/html/rfc6749)]
-* [Assertion Grant w/ JWT Profile Support](#assertion-grant-w-jwt-profile-support) [[RGC7521](https://tools.ietf.org/html/rfc7521) / [RFC7523](https://tools.ietf.org/html/rfc7523)]
+* [Assertion Grant w/ JWT Profile Support](#assertion-grant-w-jwt-profile-support) [[RFC7521](https://tools.ietf.org/html/rfc7521) / [RFC7523](https://tools.ietf.org/html/rfc7523)]
 
 ### Authorization Code Grant
 
