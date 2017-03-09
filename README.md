@@ -16,7 +16,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install oauth2-client
+    $ gem install oauth2c
 
 ## Usage
 
