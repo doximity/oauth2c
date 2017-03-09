@@ -23,7 +23,7 @@ Or install it yourself as:
 Instantiate a `OAuth2c::Client` instance with the application configuration issued by the authorization server. This can be instantiated once per-app and kept around for the entire lifetime of it In case of a Rails application, it's recommended to do it once inside a initializer:
 
 ```ruby
-OAUTH2C_CLIENT = client = OAuth2c::Client.new(
+OAUTH2C_CLIENT = OAuth2c::Client.new(
   authz_url:     "https://authorization-server.example/oauth/authorize",
   token_url:     "https://authorization-server.example/oauth/token",
   client_id:     "APP_CLIENT_ID",
