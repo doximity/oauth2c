@@ -19,14 +19,9 @@ module OAuth2c
 
       attr_reader :scope
 
-      def initialize(agent, cache_uid:, scope: [])
-        @agent     = agent
-        @scope     = scope.freeze
-        @cache_uid = cache_uid
-      end
-
-      def with_caching(cache_backend)
-        Cached.new(cache_backend, self, "#{self.class}:#{@cache_uid}")
+      def initialize(agent, scope: [])
+        @agent = agent
+        @scope = scope.freeze
       end
 
       def token
@@ -46,22 +41,6 @@ module OAuth2c
         else
           raise Error.new(response["error"], response["error_description"])
         end
-      end
-    end
-
-    class Cached
-      def initialize(cache_backend, grant, key)
-        @store = Cache::Store.new(cache_backend)
-        @grant = grant
-        @key   = key
-      end
-
-      def cached?
-        @store.cached?(@key, scope: @grant.scope)
-      end
-
-      def token
-        @store.issue(@key, scope: @grant.scope) { @grant.token }
       end
     end
   end

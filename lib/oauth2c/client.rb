@@ -16,28 +16,36 @@ module OAuth2c
   class Client
     using Refinements
 
-    def initialize(
-      authz_url: nil,
-      token_url:,
-      client_id:,
-      client_secret: nil,
-      redirect_uri: nil,
-      cache_backend: OAuth2c::Cache::Backends::Null.new
+    attr_reader(
+      :authz_url,
+      :token_url,
+      :client_id,
+      :client_secret,
+      :redirect_uri,
     )
-      @agent = Agent.new(
-        authz_url: authz_url,
-        token_url: token_url,
-        client_id: client_id,
-        client_secret: client_secret,
-        redirect_uri: redirect_uri,
-      )
 
-      @cache_backend = cache_backend
+    def initialize(authz_url: nil, token_url:, client_id:, client_secret: nil, redirect_uri: nil)
+      @authz_url     = authz_url
+      @token_url     = token_url
+      @client_id     = client_id
+      @client_secret = client_secret
+      @redirect_uri  = redirect_uri
     end
 
-    def method_missing(name, *args, **opts)
-      grant_class = Grants.const_get(name.to_s.camelize)
-      grant_class.new(@agent, **opts).with_caching(@cache_backend)
+    def method_missing(name, *_, **opts)
+      Grants.const_get(name.to_s.camelize).new(build_agent, **opts)
+    end
+
+    private
+
+    def build_agent
+      Agent.new(
+        authz_url: @authz_url,
+        token_url: @token_url,
+        client_id: @client_id,
+        client_secret: @client_secret,
+        redirect_uri: @redirect_uri,
+      )
     end
   end
 end

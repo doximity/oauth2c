@@ -19,6 +19,8 @@ module OAuth2c
     InvalidStateError = Class.new(StandardError)
 
     class Base
+      attr_reader :scope
+
       def initialize(agent, state:, scope: [])
         @agent = agent
         @state = state

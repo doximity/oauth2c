@@ -21,11 +21,11 @@ module OAuth2c
         @backend = backend
       end
 
-      def cached?(key, scope:)
+      def cached?(key, scope: [])
         cached(key, scope: scope) ? true : false
       end
 
-      def cached(key, scope:)
+      def cached(key, scope: [])
         cache = @backend.lookup(key)
         return false if cache.nil?
         return false unless scope.all? { |s| cache.scope.include?(s) }

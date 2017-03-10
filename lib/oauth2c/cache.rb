@@ -14,7 +14,8 @@
 
 module OAuth2c
   module Cache
-    autoload :Store,    "oauth2c/cache/store"
     autoload :Backends, "oauth2c/cache/backends"
+    autoload :Manager,  "oauth2c/cache/manager"
+    autoload :Store,    "oauth2c/cache/store"
   end
 end
