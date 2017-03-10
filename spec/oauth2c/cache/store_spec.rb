@@ -35,7 +35,12 @@ RSpec.describe OAuth2c::Cache::Store do
     expect(subject.cached?(key, scope: scope)).to be_falsy
 
     # Then we issue an access token
-    expect(subject.issue(key, scope: scope)).to eq(access_token)
+    issued_access_token = subject.issue(key, scope: scope) do |new_scope|
+      expect(new_scope).to eq(new_scope)
+      access_token
+    end
+
+    expect(issued_access_token).to eq(access_token)
 
     # Expect it to be cached now
     expect(subject.cached?(key, scope: scope)).to be_truthy
@@ -46,36 +51,58 @@ RSpec.describe OAuth2c::Cache::Store do
     key = "user@example.com"
 
     # issue first token
-    expect(subject.issue(key, scope: ["basic"])).to eq(access_token)
+    issued_access_token = subject.issue(key, scope: ["basic"]) do |new_scope|
+      expect(new_scope).to eq(["basic"])
+      access_token
+    end
+    expect(issued_access_token).to eq(access_token)
 
     # it's not cached for a incremented set of scopes
     expect(subject.cached?(key, scope: ["basic", "profile"])).to be_falsy
 
     # issue a new token with new scope set
-    subject.issue(key, scope: ["basic", "profile"])
-    expect(grant_class).to have_received(:new).with(agent, scope: ["basic", "profile"]).once
+    issued_access_token = subject.issue(key, scope: ["basic", "profile"]) do |new_scope|
+      expect(new_scope).to eq(["basic", "profile"])
+      access_token
+    end
+    expect(issued_access_token).to eq(access_token)
+
     expect(subject.cached?(key, scope: ["basic", "profile"])).to be_truthy
+    expect(subject.cached(key, scope: ["basic", "profile"])).to eq(access_token)
   end
 
   it "reissue token with union of scopes when diverging scopes are presented" do
     key = "user@example.com"
 
     # issue first token
-    expect(subject.issue(key, scope: ["basic"])).to eq(access_token)
+    issued_access_token = subject.issue(key, scope: ["basic"]) do |new_scope|
+      expect(new_scope).to eq(["basic"])
+      access_token
+    end
+    expect(issued_access_token).to eq(access_token)
 
     # it's not cached for a diverging set of scopes
     expect(subject.cached?(key, scope: ["profile"])).to be_falsy
 
     # issue a new token with union set
-    subject.issue(key, scope: ["profile"])
-    expect(grant_class).to have_received(:new).with(agent, scope: ["basic", "profile"]).once
+    issued_access_token = subject.issue(key, scope: ["basic", "profile"]) do |new_scope|
+      expect(new_scope).to eq(["basic", "profile"])
+      access_token
+    end
+    expect(issued_access_token).to eq(access_token)
+
     expect(subject.cached?(key, scope: ["basic", "profile"])).to be_truthy
+    expect(subject.cached(key, scope: ["basic", "profile"])).to eq(access_token)
   end
 
   it "subset of scope is considered cache" do
     key = "user@example.com"
 
-    expect(subject.issue(key, scope: ["basic", "profile"])).to eq(access_token)
+    issued_access_token = subject.issue(key, scope: ["basic", "profile"]) do |new_scope|
+      expect(new_scope).to eq(["basic", "profile"])
+      access_token
+    end
+    expect(issued_access_token).to eq(access_token)
     expect(subject.cached?(key, scope: ["basic"])).to be_truthy
     expect(subject.cached?(key, scope: ["profile"])).to be_truthy
     expect(subject.cached?(key, scope: [])).to be_truthy

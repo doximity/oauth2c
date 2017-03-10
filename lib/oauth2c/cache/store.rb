@@ -36,7 +36,7 @@ module OAuth2c
         cached = @backend.lookup(key)
         scope  = cached[:scope] | scope if cached
 
-        access_token = block.call
+        access_token = block.call(scope)
         @backend.store(key, Bucket.new(access_token, scope))
         access_token
       end

@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require "forwardable"
+
 module OAuth2c
   module Cache
     class Manager
@@ -41,7 +43,8 @@ module OAuth2c
         end
 
         def token(*args)
-          @cache.issue(@key, scope: @grant.scope) do
+          @cache.issue(@key, scope: @grant.scope) do |new_scope|
+            @grant.scopes = new_scope
             @grant.token(*args)
           end
         end
