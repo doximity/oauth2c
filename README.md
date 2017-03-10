@@ -122,19 +122,26 @@ Example:
 
 ```ruby
 # Intantiates a cache manager that will keep the 1000 most recently used access tokens in memory.
+# The manager supports the same methods that the client supports for each grant type but also provides cache specific methods
 manager = OAuth2c::Cache::Manager.new(client, OAuth2c::Cache::Backends::InMemoryLRU.new(1000))
 
-# manager supports the same methods that the client supports for each grant type but also provides cache specific methods
-manager.cached?(user.id, scope: ["basic"])
+# When calling manager methods we need to specify a cache_key, which your application controls.
+# For example, when requesting access for a user you might wanna use the id or your local user object.
+cache_key = user.id
+
+# If an access token is not yet cached, this returns false
+manager.cached?(cache_key, scope: ["basic"])
 # => false
 
-manager.resource_owner_credentials(user.id, username: 'user@example.com', password: 'secret').token
+# To issue a new access token, you can use any method available through the client but the methods takes the cache_key as the first
+# argument.
+manager.resource_owner_credentials(cache_key, username: 'user@example.com', password: 'secret').token
 # #<OAuth2c::AccessToken:0x007fad45a25658 ...>
 
-manager.cached?(user.id, scope: ["basic"])
+# An access token issued by the manager gets automatically cached.
+manager.cached?(cache_key, scope: ["basic"])
 # => true
-
-manager.cached(user.id, scope: ["basic"])
+manager.cached(cache_key, scope: ["basic"])
 # #<OAuth2c::AccessToken:0x007fad45a25658 ...>
 ```
 
