@@ -138,6 +138,15 @@ manager.cached(user.id, scope: ["basic"])
 # #<OAuth2c::AccessToken:0x007fad45a25658 ...>
 ```
 
+A access token will be considered cached if:
+
+1. There is an access token cached under the same key; and
+2. the cached access token's scope is a superset of the scope being requested.
+
+For example, if the cached access token for when `user.id` returns `1` has the scope `["basic", "profile"]`, `cached?(user.id, scope: ["basic"])` will return true but `cached?(user.id, scope: ["basic", "other"])` will not.
+
+However, whenever there is a cache token but not with the necessary scopes, a new token will be issue with the union between the cached token and the token being requested. In the example above, a new token with the scopes `["basic", "profile", "other"]` would be requested.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

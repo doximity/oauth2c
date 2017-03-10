@@ -21,7 +21,11 @@ module OAuth2c
 
       def initialize(agent, scope: [])
         @agent = agent
-        @scope = scope.freeze
+        update_scope(scope)
+      end
+
+      def update_scope(scope)
+        @scope = scope.dup.freeze
       end
 
       def token

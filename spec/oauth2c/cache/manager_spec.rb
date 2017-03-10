@@ -15,4 +15,33 @@
 require "spec_helper"
 
 RSpec.describe OAuth2c::Cache::Manager do
+  subject do
+    described_class.new(client, backend)
+  end
+
+  let :client do
+    double(:client)
+  end
+
+  let :backend do
+    OAuth2c::Cache::Backends::InMemoryLRU.new(5)
+  end
+
+  let :access_token do
+    instance_double(OAuth2c::AccessToken)
+  end
+
+  it "wraps cache and delegates to grant" do
+    key   = "key"
+    scope = ["basic"]
+
+    expect(subject.cached?(key, scope: scope)).to be_falsy
+
+    grant = double(:grant, token: access_token, scope: scope)
+    expect(grant).to receive(:update_scope).with(scope)
+
+    expect(client).to receive(:a_strategy_name).with(scope: scope).and_return(grant)
+    returned_grant = subject.a_strategy_name(key, scope: scope)
+    expect(returned_grant.token).to eq(access_token)
+  end
 end

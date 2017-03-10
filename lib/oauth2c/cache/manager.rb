@@ -44,7 +44,7 @@ module OAuth2c
 
         def token(*args)
           @cache.issue(@key, scope: @grant.scope) do |new_scope|
-            @grant.scopes = new_scope
+            @grant.update_scope(new_scope)
             @grant.token(*args)
           end
         end
