@@ -24,7 +24,7 @@ RSpec.describe OAuth2c::Cache::Store do
   end
 
   let :access_token do
-    instance_double(OAuth2c::AccessToken)
+    instance_double(OAuth2c::AccessToken, expires_at: Time.now + 3600)
   end
 
   it "caches a access token when issued" do
@@ -106,5 +106,17 @@ RSpec.describe OAuth2c::Cache::Store do
     expect(subject.cached?(key, scope: ["basic"])).to be_truthy
     expect(subject.cached?(key, scope: ["profile"])).to be_truthy
     expect(subject.cached?(key, scope: [])).to be_truthy
+  end
+
+  it "doesn't considered expired tokens cached" do
+    key = "user@example.com"
+
+    issued_access_token = subject.issue(key, scope: ["basic"]) do |new_scope|
+      expect(new_scope).to eq(["basic"])
+      access_token
+    end
+
+    allow(access_token).to receive(:expires_at).and_return(Time.now - 1)
+    expect(subject.cached?(key, scope: ["basic"])).to be_falsy
   end
 end

@@ -34,10 +34,15 @@ module OAuth2c
         end
 
         def store(key, bucket)
+          access_token = bucket.access_token
+
           @redis.mset(
-            "#{fq_key(key)}:access_token", JSON.dump(bucket.access_token.attributes),
+            "#{fq_key(key)}:access_token", JSON.dump(access_token.attributes),
             "#{fq_key(key)}:scope", JSON.dump(bucket.scope),
           )
+
+          @redis.expire("#{fq_key(key)}:access_token", access_token.expires_in)
+          @redis.expire("#{fq_key(key)}:scope", access_token.expires_in)
         end
 
         private

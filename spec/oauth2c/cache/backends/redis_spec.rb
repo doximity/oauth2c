@@ -44,6 +44,8 @@ RSpec.describe OAuth2c::Cache::Backends::Redis do
       "ns:KEY:access_token", access_token_json,
       "ns:KEY:scope", '["basic","profile"]',
     )
+    expect(redis).to receive(:expire).with("ns:KEY:access_token", access_token.expires_in)
+    expect(redis).to receive(:expire).with("ns:KEY:scope", access_token.expires_in)
     subject.store(key, bucket)
 
     expect(redis).to receive(:mget).with("ns:KEY:access_token", "ns:KEY:scope").and_return([access_token_json, '["basic","profile"]'])

@@ -29,7 +29,10 @@ module OAuth2c
         cache = @backend.lookup(key)
         return false if cache.nil?
         return false unless scope.all? { |s| cache.scope.include?(s) }
-        cache.access_token
+
+        if cache.access_token.expires_at >= Time.now
+          cache.access_token
+        end
       end
 
       def issue(key, scope:, &block)
