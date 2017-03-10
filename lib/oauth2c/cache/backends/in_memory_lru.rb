@@ -12,15 +12,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require "thread"
+
 module OAuth2c
-  autoload :AccessToken,  "oauth2c/access_token"
-  autoload :Agent,        "oauth2c/agent"
-  autoload :Cache,        "oauth2c/cache"
-  autoload :Client,       "oauth2c/client"
-  autoload :Error,        "oauth2c/error"
-  autoload :Grants,       "oauth2c/grants"
-  autoload :Refinements,  "oauth2c/refinements"
-  autoload :ThreeLegged,  "oauth2c/three_legged"
-  autoload :TwoLegged,    "oauth2c/two_legged"
-  autoload :VERSION,      "oauth2c/version"
+  module Cache
+    module Backends
+      class InMemoryLRU
+        def initialize(max_size)
+          @max_size = max_size
+          @store = {}
+          @mtx = Mutex.new
+        end
+
+        def lookup(key)
+          @mtx.synchronize do
+            return nil unless @store.has_key?(key)
+            @store[key] = @store.delete(key)
+          end
+        end
+
+        def store(key, bucket)
+          @mtx.synchronize do
+            @store[key] = bucket
+
+            if @store.size > @max_size
+              @store.shift
+            end
+          end
+        end
+      end
+    end
+  end
 end

@@ -13,14 +13,8 @@
 # limitations under the License.
 
 module OAuth2c
-  autoload :AccessToken,  "oauth2c/access_token"
-  autoload :Agent,        "oauth2c/agent"
-  autoload :Cache,        "oauth2c/cache"
-  autoload :Client,       "oauth2c/client"
-  autoload :Error,        "oauth2c/error"
-  autoload :Grants,       "oauth2c/grants"
-  autoload :Refinements,  "oauth2c/refinements"
-  autoload :ThreeLegged,  "oauth2c/three_legged"
-  autoload :TwoLegged,    "oauth2c/two_legged"
-  autoload :VERSION,      "oauth2c/version"
+  module Cache
+    autoload :Store,    "oauth2c/cache/store"
+    autoload :Backends, "oauth2c/cache/backends"
+  end
 end
