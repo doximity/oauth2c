@@ -124,7 +124,7 @@ Example:
 # Intantiates a cache manager that will keep the 1000 most recently used access tokens in memory.
 manager = OAuth2c::Cache::Manager.new(client, OAuth2c::Cache::Backends::InMemoryLRU.new(1000))
 
-# manager supports the same methods that client support for each grant tyoe but it has cache specific methods as well
+# manager supports the same methods that the client supports for each grant type but also provides cache specific methods
 manager.cached?(user.id, scope: ["basic"])
 # => false
 
@@ -141,11 +141,11 @@ manager.cached(user.id, scope: ["basic"])
 A access token will be considered cached if:
 
 1. There is an access token cached under the same key; and
-2. the cached access token's scope is a superset of the scope being requested.
+2. The cached access token's scope is a superset of the scope being requested.
 
-For example, if the cached access token for when `user.id` returns `1` has the scope `["basic", "profile"]`, `cached?(user.id, scope: ["basic"])` will return true but `cached?(user.id, scope: ["basic", "other"])` will not.
+For example, if the cached access token for a key is present and has the scope `["basic", "profile"]` then `cached?(user.id, scope: ["basic"])` will return true but `cached?(user.id, scope: ["basic", "other"])` will not.
 
-However, whenever there is a cache token but not with the necessary scopes, a new token will be issue with the union between the cached token and the token being requested. In the example above, a new token with the scopes `["basic", "profile", "other"]` would be requested.
+However, whenever there is a cached token without the necessary scopes, a new token will be issued with a scope matching the union of the cached token's scope and the scope of the token being requested. In the example above, a new token with the scopes `["basic", "profile", "other"]` would be requested.
 
 ## Development
 
