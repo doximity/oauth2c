@@ -34,6 +34,8 @@ OAUTH2C_CLIENT = OAuth2c::Client.new(
 
 In order to issue an access token, you need to pick one of the grant type available. Note that not all grant types might be implemented on the server side nor be allowed for your client.
 
+## Grant Types
+
 This gem ships with following grant types:
 
 * [Authorization Code Grant](#authorization-code-grant) [[RFC6749](https://tools.ietf.org/html/rfc6749)]
@@ -42,7 +44,7 @@ This gem ships with following grant types:
 * [Client Credentials Grant](#client-credentials-grant) [[RFC6749](https://tools.ietf.org/html/rfc6749)]
 * [Assertion Grant w/ JWT Profile Support](#assertion-grant-w-jwt-profile-support) [[RFC7521](https://tools.ietf.org/html/rfc7521) / [RFC7523](https://tools.ietf.org/html/rfc7523)]
 
-### Authorization Code Grant
+#### Authorization Code Grant
 
 As described by https://tools.ietf.org/html/rfc6749#section-4.1, the client generates a URL and redirects the user-agent it:
 
@@ -58,7 +60,7 @@ grant = OAUTH2C_CLIENT.authorization_code(state: "STATE", scope: ["profile", "em
 grant.token(url)
 ```
 
-### Implicit Flow
+#### Implicit Flow
 
 As described by https://tools.ietf.org/html/rfc6749#section-4.2, the client generates a URL and redirects the user-agent it:
 
@@ -76,7 +78,7 @@ grant.token(url)
 
 NOTE: keep in mind that if the request is being made from a web browser, the fragment is usally stripped away from the URL sent to the server. For this reason, this strategy is not very useful for server side components but can be useful for native apps built with ruby where you have full control over the user-agent.
 
-### Resource Owner Password Credentials Grant
+#### Resource Owner Password Credentials Grant
 
 As described by https://tools.ietf.org/html/rfc6749#section-4.3, the client collects the username and password and exchange it by a token:
 
@@ -86,7 +88,7 @@ grant = OAUTH2C_CLIENT.resource_owner_credentials(username: 'user@example.com', 
 grant.token
 ```
 
-### Client Credentials Grant
+#### Client Credentials Grant
 
 As described by https://tools.ietf.org/html/rfc6749#section-4.4, the client issues a token on behalf of itself instead of an user:
 
@@ -95,7 +97,7 @@ grant = OAUTH2C_CLIENT.client_credentials(scope: ["profile", "email"])
 grant.token
 ```
 
-### Assertion Grant w/ JWT Profile Support
+#### Assertion Grant w/ JWT Profile Support
 
 As described by https://tools.ietf.org/html/rfc7521 and https://tools.ietf.org/html/rfc7523, the client issues a token on behalf of user without requiring the user approval. Instead, the client provides a assertion with the information about the user.
 
@@ -110,6 +112,30 @@ profile = OAuth2c::Grants::Assertion::JWT.new(
 
 grant = OAUTH2C_CLIENT.assertion(profile: profile, scope: ["profile", "email"])
 grant.token
+```
+
+### Caching tokens
+
+OAuth2c ships with a cache manager for tokens, to help handle storage and management of cached access tokens while taking in consideration the scopes associated with it.
+
+Example:
+
+```ruby
+# Intantiates a cache manager that will keep the 1000 most recently used access tokens in memory.
+manager = OAuth2c::Cache::Manager.new(client, OAuth2c::Cache::Backends::InMemoryLRU.new(1000))
+
+# manager supports the same methods that client support for each grant tyoe but it has cache specific methods as well
+manager.cached?(user.id, scope: ["basic"])
+# => false
+
+manager.resource_owner_credentials(user.id, username: 'user@example.com', password: 'secret').token
+# #<OAuth2c::AccessToken:0x007fad45a25658 ...>
+
+manager.cached?(user.id, scope: ["basic"])
+# => true
+
+manager.cached(user.id, scope: ["basic"])
+# #<OAuth2c::AccessToken:0x007fad45a25658 ...>
 ```
 
 ## Development
