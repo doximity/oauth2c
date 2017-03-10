@@ -16,21 +16,11 @@ require "spec_helper"
 
 RSpec.describe OAuth2c::Cache::Store do
   subject do
-    described_class.new(backend, agent, grant_class)
+    described_class.new(backend)
   end
 
   let :backend do
     OAuth2c::Cache::Backends::InMemoryLRU.new(5)
-  end
-
-  let :agent do
-    instance_double(OAuth2c::Agent)
-  end
-
-  let :grant_class do
-    double(:grant_class,
-      new: double(:grant, token: access_token)
-    )
   end
 
   let :access_token do

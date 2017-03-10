@@ -16,7 +16,14 @@ module OAuth2c
   class Client
     using Refinements
 
-    def initialize(authz_url: nil, token_url:, client_id:, client_secret: nil, redirect_uri: nil)
+    def initialize(
+      authz_url: nil,
+      token_url:,
+      client_id:,
+      client_secret: nil,
+      redirect_uri: nil,
+      cache_backend: OAuth2c::Cache::Backends::Null.new
+    )
       @agent = Agent.new(
         authz_url: authz_url,
         token_url: token_url,
@@ -24,10 +31,13 @@ module OAuth2c
         client_secret: client_secret,
         redirect_uri: redirect_uri,
       )
+
+      @cache_backend = cache_backend
     end
 
     def method_missing(name, *args, **opts)
-      Grants.const_get(name.to_s.camelize).new(@agent, **opts)
+      grant_class = Grants.const_get(name.to_s.camelize)
+      grant_class.new(@agent, **opts).with_caching(@cache_backend)
     end
   end
 end

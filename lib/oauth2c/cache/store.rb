@@ -17,10 +17,8 @@ module OAuth2c
     class Store
       Bucket = Struct.new(:token, :scope)
 
-      def initialize(backend, agent, grant_class)
-        @backend     = backend
-        @agent       = agent
-        @grant_class = grant_class
+      def initialize(backend)
+        @backend = backend
       end
 
       def cached?(key, scope:)
@@ -34,13 +32,11 @@ module OAuth2c
         cache.token
       end
 
-      def issue(key, scope:, **other)
+      def issue(key, scope:, &block)
         cached = @backend.lookup(key)
         scope  = cached[:scope] | scope if cached
 
-        grant  = @grant_class.new(@agent, scope: scope, **other)
-
-        access_token = grant.token
+        access_token = block.call
         @backend.store(key, Bucket.new(access_token, scope))
         access_token
       end

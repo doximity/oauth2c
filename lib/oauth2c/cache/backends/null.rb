@@ -12,11 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require "thread"
+
 module OAuth2c
   module Cache
     module Backends
-      autoload :Null,        "oauth2c/cache/backends/null"
-      autoload :InMemoryLRU, "oauth2c/cache/backends/in_memory_lru"
+      class Null
+        def lookup(key)
+          nil
+        end
+
+        def store(key, bucket)
+          nil
+        end
+      end
     end
   end
 end
