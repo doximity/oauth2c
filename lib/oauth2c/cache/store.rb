@@ -15,7 +15,7 @@
 module OAuth2c
   module Cache
     class Store
-      Bucket = Struct.new(:token, :scope)
+      Bucket = Struct.new(:access_token, :scope)
 
       def initialize(backend)
         @backend = backend
@@ -29,7 +29,7 @@ module OAuth2c
         cache = @backend.lookup(key)
         return false if cache.nil?
         return false unless scope.all? { |s| cache.scope.include?(s) }
-        cache.token
+        cache.access_token
       end
 
       def issue(key, scope:, &block)

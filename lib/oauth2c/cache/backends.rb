@@ -17,6 +17,7 @@ module OAuth2c
     module Backends
       autoload :Null,        "oauth2c/cache/backends/null"
       autoload :InMemoryLRU, "oauth2c/cache/backends/in_memory_lru"
+      autoload :Redis,       "oauth2c/cache/backends/redis"
     end
   end
 end

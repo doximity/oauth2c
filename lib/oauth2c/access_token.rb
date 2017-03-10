@@ -28,7 +28,10 @@ module OAuth2c
       @token_type    = token_type
       @expires_in    = Integer(expires_in)
       @refresh_token = refresh_token
-      @extra         = extra
+
+
+      extra.delete(:expires_at)
+      @extra = extra
 
       @expires_at = Time.now + @expires_in
     end
@@ -40,7 +43,7 @@ module OAuth2c
         expires_in: @expires_in,
         expires_at: @expires_at,
         refresh_token: @refresh_token,
-        extra: @extra,
+        **@extra,
       }
     end
 
