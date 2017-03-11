@@ -60,7 +60,7 @@ grant = OAUTH2C_CLIENT.authorization_code(state: "STATE", scope: ["profile", "em
 grant.token(url)
 ```
 
-#### Implicit Flow
+#### Implicit Grant
 
 As described by https://tools.ietf.org/html/rfc6749#section-4.2, the client generates a URL and redirects the user-agent:
 
