@@ -102,7 +102,7 @@ grant.token
 As described by https://tools.ietf.org/html/rfc7521 and https://tools.ietf.org/html/rfc7523, the client issues a token on behalf of user without requiring the user approval. Instead, the client provides a assertion with the information about the user.
 
 ```ruby
-profile = OAuth2c::Grants::Assertion::JWT.new(
+profile = OAuth2c::Grants::Assertion::JWTProfile.new(
   "HS512",
   "assertion-key",
   iss: "https://myapp.example",
@@ -153,6 +153,8 @@ A access token will be considered cached if:
 For example, if the cached access token for a key is present and has the scope `["basic", "profile"]` then `cached?(user.id, scope: ["basic"])` will return true but `cached?(user.id, scope: ["basic", "other"])` will not.
 
 However, whenever there is a cached token without the necessary scopes, a new token will be issued with a scope matching the union of the cached token's scope and the scope of the token being requested. In the example above, a new token with the scopes `["basic", "profile", "other"]` would be requested.
+
+In addition to `OAuth2c::Cache::Backends::InMemoryLRU`, the gem also ships a Redis backend `OAuth2c::Cache::Backends::Redis` and a null service backend `OAuth2c::Cache::Backends::Null` which is useful to prevent caching while still using the cache manager and keeping the API the same.
 
 ## Development
 
