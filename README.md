@@ -46,7 +46,7 @@ This gem ships with following grant types:
 
 #### Authorization Code Grant
 
-As described by https://tools.ietf.org/html/rfc6749#section-4.1, the client generates a URL and redirects the user-agent it:
+As described by https://tools.ietf.org/html/rfc6749#section-4.1, the client generates a URL and redirects the user-agent:
 
 ```ruby
 grant = OAUTH2C_CLIENT.authorization_code(state: "STATE", scope: ["profile", "email"])
@@ -62,7 +62,7 @@ grant.token(url)
 
 #### Implicit Flow
 
-As described by https://tools.ietf.org/html/rfc6749#section-4.2, the client generates a URL and redirects the user-agent it:
+As described by https://tools.ietf.org/html/rfc6749#section-4.2, the client generates a URL and redirects the user-agent:
 
 ```ruby
 grant = OAUTH2C_CLIENT.implicit(state: "STATE", scope: ["profile", "email"])
