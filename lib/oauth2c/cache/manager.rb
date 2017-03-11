@@ -24,7 +24,18 @@ module OAuth2c
         @cache  = Cache::Store.new(cache_backend)
       end
 
-      def_delegators :@cache, :cached?, :cached
+      def_delegators(:@cache,
+        :cached?,
+        :cached,
+      )
+
+      def_delegators(:@client,
+        :authz_url,
+        :token_url,
+        :client_id,
+        :client_secret,
+        :redirect_uri,
+      )
 
       def method_missing(name, key, *args, **opts)
         grant = @client.public_send(name, *args, **opts)
