@@ -22,18 +22,20 @@ module OAuth2c
       :client_id,
       :client_secret,
       :redirect_uri,
+      :default_scope,
     )
 
-    def initialize(authz_url: nil, token_url:, client_id:, client_secret: nil, redirect_uri: nil)
+    def initialize(authz_url: nil, token_url:, client_id:, client_secret: nil, redirect_uri: nil, default_scope: [])
       @authz_url     = authz_url
       @token_url     = token_url
       @client_id     = client_id
       @client_secret = client_secret
       @redirect_uri  = redirect_uri
+      @default_scope = default_scope
     end
 
-    def method_missing(name, *_, **opts)
-      Grants.const_get(name.to_s.camelize).new(build_agent, **opts)
+    def method_missing(name, *_, scope: @default_scope, **opts)
+      Grants.const_get(name.to_s.camelize).new(build_agent, scope: scope, **opts)
     end
 
     private
