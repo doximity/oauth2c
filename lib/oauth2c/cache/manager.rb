@@ -19,23 +19,27 @@ module OAuth2c
     class Manager
       extend Forwardable
 
-      def initialize(client, cache_backend)
-        @client = client
-        @cache  = Cache::Store.new(cache_backend)
-      end
-
-      def_delegators(:@cache,
-        :cached?,
-        :cached,
-      )
-
       def_delegators(:@client,
         :authz_url,
         :token_url,
         :client_id,
         :client_secret,
         :redirect_uri,
+        :default_scope,
       )
+
+      def initialize(client, cache_backend)
+        @client = client
+        @cache  = Cache::Store.new(cache_backend)
+      end
+
+      def cached?(key, scope: @client.default_scope)
+        @cache.cached?(key, scope)
+      end
+
+      def cached(key, scope: @client.default_scope)
+        @cache.cached(key, scope)
+      end
 
       def method_missing(name, key, *args, **opts)
         grant = @client.public_send(name, *args, **opts)
