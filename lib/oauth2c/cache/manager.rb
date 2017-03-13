@@ -34,11 +34,11 @@ module OAuth2c
       end
 
       def cached?(key, scope: @client.default_scope)
-        @cache.cached?(key, scope)
+        @cache.cached?(key, scope: scope)
       end
 
       def cached(key, scope: @client.default_scope)
-        @cache.cached(key, scope)
+        @cache.cached(key, scope: scope)
       end
 
       def method_missing(name, key, *args, **opts)
