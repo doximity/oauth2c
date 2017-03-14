@@ -119,4 +119,15 @@ RSpec.describe OAuth2c::Cache::Store do
     allow(access_token).to receive(:expires_at).and_return(Time.now - 1)
     expect(subject.cached?(key, scope: ["basic"])).to be_falsy
   end
+
+  it "doesn't cache when key is nil" do
+    key = nil
+
+    issued_access_token = subject.issue(key, scope: ["basic"]) do |new_scope|
+      expect(new_scope).to eq(["basic"])
+      access_token
+    end
+
+    expect(subject.cached?(key, scope: ["basic"])).to be_falsy
+  end
 end

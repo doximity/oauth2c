@@ -26,6 +26,8 @@ module OAuth2c
       end
 
       def cached(key, scope: [])
+        return nil if key.nil?
+
         cache = @backend.lookup(key)
         return false if cache.nil?
         return false unless scope.all? { |s| cache.scope.include?(s) }
@@ -36,11 +38,11 @@ module OAuth2c
       end
 
       def issue(key, scope:, &block)
-        cached = @backend.lookup(key)
+        cached = key && @backend.lookup(key)
         scope  = cached[:scope] | scope if cached
 
         access_token = block.call(scope)
-        @backend.store(key, Bucket.new(access_token, scope))
+        @backend.store(key, Bucket.new(access_token, scope)) if key
         access_token
       end
     end
