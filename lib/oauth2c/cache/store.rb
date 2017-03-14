@@ -17,8 +17,9 @@ module OAuth2c
     class Store
       Bucket = Struct.new(:access_token, :scope)
 
-      def initialize(backend)
-        @backend = backend
+      def initialize(backend, exp_leeway: 300)
+        @backend    = backend
+        @exp_leeway = exp_leeway
       end
 
       def cached?(key, scope: [])
@@ -32,7 +33,7 @@ module OAuth2c
         return nil if cache.nil?
         return nil unless scope.all? { |s| cache.scope.include?(s) }
 
-        if cache.access_token.expires_at >= Time.now
+        if cache.access_token.expires_at - @exp_leeway >= Time.now
           cache.access_token
         end
       end

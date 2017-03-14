@@ -16,7 +16,11 @@ require "spec_helper"
 
 RSpec.describe OAuth2c::Cache::Store do
   subject do
-    described_class.new(backend)
+    described_class.new(backend, exp_leeway: exp_leeway)
+  end
+
+  let :exp_leeway do
+    60
   end
 
   let :backend do
@@ -116,7 +120,7 @@ RSpec.describe OAuth2c::Cache::Store do
       access_token
     end
 
-    allow(access_token).to receive(:expires_at).and_return(Time.now - 1)
+    allow(access_token).to receive(:expires_at).and_return(Time.now + exp_leeway)
     expect(subject.cached?(key, scope: ["basic"])).to be_falsy
   end
 
