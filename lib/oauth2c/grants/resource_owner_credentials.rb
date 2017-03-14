@@ -15,8 +15,8 @@
 module OAuth2c
   module Grants
     class ResourceOwnerCredentials < OAuth2c::TwoLegged::Base
-      def initialize(agent, username:, password:)
-        super(agent)
+      def initialize(agent, username:, password:, **opts)
+        super(agent, **opts)
         @username = username
         @password = password
       end
