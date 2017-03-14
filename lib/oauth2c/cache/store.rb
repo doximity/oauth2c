@@ -29,8 +29,8 @@ module OAuth2c
         return nil if key.nil?
 
         cache = @backend.lookup(key)
-        return false if cache.nil?
-        return false unless scope.all? { |s| cache.scope.include?(s) }
+        return nil if cache.nil?
+        return nil unless scope.all? { |s| cache.scope.include?(s) }
 
         if cache.access_token.expires_at >= Time.now
           cache.access_token
