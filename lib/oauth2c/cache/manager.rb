@@ -46,6 +46,12 @@ module OAuth2c
         CacheProxy.new(@cache, key, grant)
       end
 
+      def respond_to_missing?(name, include_private = false)
+        @client.respond_to?(name) || super
+      end
+
+      private
+
       class CacheProxy < BasicObject
         def initialize(cache, key, grant)
           @cache = cache
