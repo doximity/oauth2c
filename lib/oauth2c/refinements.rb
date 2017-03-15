@@ -4,6 +4,10 @@ module OAuth2c
       def camelize
         gsub(/(?:\A|_)([a-z])/) { $1.upcase }
       end
+
+      def underscore
+        gsub(/(\A|[a-z])([A-Z])/) { $1.empty?? $2.downcase : "#{$1}_#{$2.downcase}" }
+      end
     end
 
     refine Hash do

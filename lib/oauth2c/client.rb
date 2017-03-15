@@ -32,13 +32,21 @@ module OAuth2c
       @client_secret = client_secret
       @redirect_uri  = redirect_uri
       @default_scope = default_scope
-    end
 
-    def method_missing(name, *_, scope: @default_scope, **opts)
-      Grants.const_get(name.to_s.camelize).new(build_agent, scope: scope, **opts)
+      define_grant_methods!
     end
 
     private
+
+    def define_grant_methods!
+      Grants.constants.each do |name|
+        const = Grants.const_get(name)
+
+        define_singleton_method("#{name.to_s.underscore}") do |*_, scope: @default_scope, **opts|
+          const.new(build_agent, scope: scope, **opts)
+        end
+      end
+    end
 
     def build_agent
       Agent.new(
