@@ -47,6 +47,10 @@ module OAuth2c
       }
     end
 
+    def expired?(leeway = 0)
+      expires_at - leeway < Time.now
+    end
+
     def ==(other)
       access_token == other.access_token &&
       token_type == other.token_type &&
