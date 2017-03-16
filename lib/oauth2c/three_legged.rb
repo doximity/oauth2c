@@ -35,8 +35,15 @@ module OAuth2c
         @agent.authz_url(state: @state, scope: @scope, **authz_params)
       end
 
-      def token(callback_url)
-        query_params, fragment_params = parse_callback_url(callback_url)
+      def token(callback_url_or_params, fragment_params = nil)
+        case callback_url_or_params
+        when String
+          query_params, fragment_params = parse_callback_url(callback_url_or_params)
+        when Hash
+          query_params, fragment_params = callback_url_or_params, fragment_params
+        else
+          raise ArgumentError, "invalid arguments, expects URL or hash with params"
+        end
 
         if query_params[:error]
           raise Error.new(query_params[:error], query_params[:error_description])
