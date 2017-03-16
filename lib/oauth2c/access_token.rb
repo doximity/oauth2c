@@ -48,10 +48,12 @@ module OAuth2c
     end
 
     def expired?(leeway = 0)
-      expires_at - leeway < Time.now
+      @expires_at - leeway < Time.now
     end
 
     def ==(other)
+      return false unless other.is_a?(self.class)
+
       access_token == other.access_token &&
       token_type == other.token_type &&
       expires_in == other.expires_in &&
