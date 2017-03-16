@@ -23,7 +23,7 @@ module OAuth2c
       :extra,
     )
 
-    def initialize(access_token:, token_type:, expires_in:, refresh_token: nil, **extra)
+    def initialize(access_token:, token_type:, expires_in:, expires_at: nil, refresh_token: nil, **extra)
       @access_token  = access_token
       @token_type    = token_type
       @expires_in    = Integer(expires_in)
@@ -33,7 +33,7 @@ module OAuth2c
       extra.delete(:expires_at)
       @extra = extra
 
-      @expires_at = Time.now + @expires_in
+      @expires_at = expires_at || Time.now + @expires_in
     end
 
     def attributes
