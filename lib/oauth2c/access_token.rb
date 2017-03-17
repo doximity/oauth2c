@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require "time"
+
 module OAuth2c
   class AccessToken
     attr_reader(
@@ -33,7 +35,7 @@ module OAuth2c
       extra.delete(:expires_at)
       @extra = extra
 
-      @expires_at = expires_at || Time.now + @expires_in
+      @expires_at = normalize_time(expires_at) || Time.now + @expires_in
     end
 
     def attributes
@@ -59,6 +61,21 @@ module OAuth2c
       expires_in == other.expires_in &&
       refresh_token == other.refresh_token &&
       extra == other.extra
+    end
+
+    private
+
+    def normalize_time(time)
+      case time
+      when Time, NilClass
+        time
+      when String
+        Time.parse(time)
+      when Integer
+        Time.at(time)
+      else
+        raise ArgumentError, "invalid time #{time.inspect}"
+      end
     end
   end
 end
