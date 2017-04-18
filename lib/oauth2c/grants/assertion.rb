@@ -25,7 +25,7 @@ module OAuth2c
             sub:,
             jti: SecureRandom.uuid,
             exp: Time.now + (5 * 60),
-            nbf: Time.now,
+            nbf: Time.now - 1,
             iat: Time.now,
             **other_claims
         )
