@@ -13,5 +13,5 @@
 # limitations under the License.
 
 module OAuth2c
-  VERSION = "0.2.0"
+  VERSION = "0.2.1"
 end
