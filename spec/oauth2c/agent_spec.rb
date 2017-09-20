@@ -65,7 +65,7 @@ RSpec.describe OAuth2c::Agent do
       body: JSON.dump({})
     )
     required_args = { token_url: "http://example.com/token", client_id: "id" }
-    agent = described_class.new(auth_via_body: true, client_secret: "secret",
+    agent = described_class.new(client_credentials_on_body: true, client_secret: "secret",
                                 **required_args)
     expected_body = "grant_type=foo&scope&client_id=id&client_secret=secret"
     expect_any_instance_of(HTTP::Client).to receive(:post).

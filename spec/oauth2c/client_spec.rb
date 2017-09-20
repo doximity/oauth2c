@@ -18,11 +18,11 @@ RSpec.describe OAuth2c::Client do
 
   let(:required_args) { { token_url: "", client_id: "" } }
 
-  it "accepts/passes :agent_options along to the agent" do
-    agent_options = { auth_via_body: true }
+  it "accepts/passes :client_credentials_on_body to the agent" do
+    agent_options = { client_credentials_on_body: true }
     expect(OAuth2c::Agent).to receive(:new).
       with(hash_including(agent_options))
-    client = described_class.new(agent_options: agent_options, **required_args)
+    client = described_class.new(client_credentials_on_body: true, **required_args)
     client.authorization_code(state: "foo")
   end
 end

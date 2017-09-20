@@ -23,18 +23,18 @@ module OAuth2c
     ConfigError = Class.new(StandardError)
 
     def initialize(authz_url: nil, token_url:, client_id:, client_secret: nil,
-                   redirect_uri: nil, auth_via_body: false)
+                   redirect_uri: nil, client_credentials_on_body: false)
       @authz_url     = authz_url && authz_url.chomp("/")
       @token_url     = token_url && token_url.chomp("/")
       @client_id     = client_id
       @client_secret = client_secret
       @redirect_uri  = redirect_uri
-      @auth_via_body = auth_via_body
+      @client_credentials_on_body = client_credentials_on_body
 
       @http_client = HTTP.nodelay
         .accept("application/json")
         .headers("Content-Type": "application/x-www-form-urlencoded; encoding=UTF-8")
-      unless @auth_via_body
+      unless @client_credentials_on_body
         @http_client = @http_client.basic_auth(user: @client_id, pass: @client_secret)
       end
     end
@@ -68,7 +68,7 @@ module OAuth2c
         scope: normalize_scope(scope),
         **params,
       }
-      if @auth_via_body
+      if @client_credentials_on_body
         params.merge!(
           client_id: @client_id,
           client_secret: @client_secret
