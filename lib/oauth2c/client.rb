@@ -25,13 +25,15 @@ module OAuth2c
       :default_scope,
     )
 
-    def initialize(authz_url: nil, token_url:, client_id:, client_secret: nil, redirect_uri: nil, default_scope: [])
+    def initialize(authz_url: nil, token_url:, client_id:, client_secret: nil,
+                   redirect_uri: nil, default_scope: [], agent_options: {})
       @authz_url     = authz_url
       @token_url     = token_url
       @client_id     = client_id
       @client_secret = client_secret
       @redirect_uri  = redirect_uri
       @default_scope = default_scope
+      @agent_options = agent_options
 
       define_grant_methods!
     end
@@ -55,6 +57,7 @@ module OAuth2c
         client_id: @client_id,
         client_secret: @client_secret,
         redirect_uri: @redirect_uri,
+        **@agent_options
       )
     end
   end

@@ -17,11 +17,11 @@ require "spec_helper"
 RSpec.describe OAuth2c::Agent do
   subject do
     described_class.new(
-      authz_url:     "http://authz.test/oauth/authorize",
-      token_url:     "http://authz.test/oauth/token",
-      client_id:     "CLIENT_ID",
+      authz_url: "http://authz.test/oauth/authorize",
+      token_url: "http://authz.test/oauth/token",
+      client_id: "CLIENT_ID",
       client_secret: "CLIENT_SECRET",
-      redirect_uri:  "http://client.test/callback",
+      redirect_uri: "http://client.test/callback",
     )
   end
 
@@ -34,7 +34,7 @@ RSpec.describe OAuth2c::Agent do
     stub_request(:post, "http://authz.test/oauth/token")
       .with(
         body: "grant_type=custom&scope=basic+email&custom_code=123",
-        headers: { "Accept": "application/json", "Authorization": "Basic Q0xJRU5UX0lEOkNMSUVOVF9TRUNSRVQ=", "Content-Type": "application/x-www-form-urlencoded; encoding=UTF-8"}
+        headers: { "Accept": "application/json", "Authorization": "Basic Q0xJRU5UX0lEOkNMSUVOVF9TRUNSRVQ=", "Content-Type": "application/x-www-form-urlencoded; encoding=UTF-8" }
       )
       .to_return(
         status: 200,
@@ -56,5 +56,21 @@ RSpec.describe OAuth2c::Agent do
     expect(token["expires_in"]).to eq(3600)
     expect(token["refresh_token"]).to eq("tGzv3JOkF0XG5Qx2TlKWIA")
     expect(token["example_parameter"]).to eq("example_value")
+  end
+
+  it "allows passing auth via the body" do
+    stub_response = double(
+      status: double(success?: true),
+      headers: { "Content-Type": "application/json; encoding=utf-8" },
+      body: JSON.dump({})
+    )
+    required_args = { token_url: "http://example.com/token", client_id: "id" }
+    agent = described_class.new(auth_via_body: true, client_secret: "secret",
+                                **required_args)
+    expected_body = "grant_type=foo&scope&client_id=id&client_secret=secret"
+    expect_any_instance_of(HTTP::Client).to receive(:post).
+      with(anything, hash_including(body: expected_body)).
+      and_return(stub_response)
+    agent.token(grant_type: "foo")
   end
 end
