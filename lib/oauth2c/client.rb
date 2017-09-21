@@ -25,13 +25,16 @@ module OAuth2c
       :default_scope,
     )
 
-    def initialize(authz_url: nil, token_url:, client_id:, client_secret: nil, redirect_uri: nil, default_scope: [])
-      @authz_url     = authz_url
-      @token_url     = token_url
-      @client_id     = client_id
-      @client_secret = client_secret
-      @redirect_uri  = redirect_uri
-      @default_scope = default_scope
+    def initialize(authz_url: nil, token_url:, client_id:, client_secret: nil,
+                   redirect_uri: nil, default_scope: [],
+                   client_credentials_on_body: false)
+      @authz_url                  = authz_url
+      @token_url                  = token_url
+      @client_id                  = client_id
+      @client_secret              = client_secret
+      @redirect_uri               = redirect_uri
+      @default_scope              = default_scope
+      @client_credentials_on_body = client_credentials_on_body
 
       define_grant_methods!
     end
@@ -55,6 +58,7 @@ module OAuth2c
         client_id: @client_id,
         client_secret: @client_secret,
         redirect_uri: @redirect_uri,
+        client_credentials_on_body: @client_credentials_on_body,
       )
     end
   end

@@ -12,6 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module OAuth2c
-  VERSION = "0.3.0"
+require "spec_helper"
+
+RSpec.describe OAuth2c::Client do
+
+  let(:required_args) { { token_url: "", client_id: "" } }
+
+  it "accepts/passes :client_credentials_on_body to the agent" do
+    agent_options = { client_credentials_on_body: true }
+    expect(OAuth2c::Agent).to receive(:new).
+      with(hash_including(agent_options))
+    client = described_class.new(client_credentials_on_body: true, **required_args)
+    client.authorization_code(state: "foo")
+  end
 end
