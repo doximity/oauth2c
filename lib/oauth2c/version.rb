@@ -13,5 +13,5 @@
 # limitations under the License.
 
 module OAuth2c
-  VERSION = "0.3.0"
+  VERSION = '1.0.0.beta1'.freeze
 end
