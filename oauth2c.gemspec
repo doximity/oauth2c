@@ -47,8 +47,8 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "http"
-  spec.add_runtime_dependency "jwt"
+  spec.add_runtime_dependency "http", "~> 4"
+  spec.add_runtime_dependency "jwt", "~> 1.5"
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "pry"
