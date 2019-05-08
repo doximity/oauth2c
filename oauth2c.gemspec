@@ -21,8 +21,8 @@ require 'oauth2c/version'
 Gem::Specification.new do |spec|
   spec.name          = "oauth2c"
   spec.version       = OAuth2c::VERSION
-  spec.authors       = ["Rodrigo Kochenburger"]
-  spec.email         = ["divoxx@gmail.com"]
+  spec.authors       = ["Doximity"]
+  spec.email         = ["engineering@doximity.com"]
 
   spec.summary       = %q{OAuth2c is a extensible OAuth2 client implementation}
   spec.description   = %q{OAuth2c is a extensible OAuth2 client implementation}
@@ -37,6 +37,8 @@ Gem::Specification.new do |spec|
   #     "public gem pushes."
   # end
 
+  spec.required_ruby_version = ">= 2.3.0"
+
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
@@ -45,14 +47,14 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "http", "~> 2.0"
+  spec.add_runtime_dependency "http", "~> 4"
   spec.add_runtime_dependency "jwt", "~> 1.5"
 
-  spec.add_development_dependency "bundler", "~> 1.14"
+  spec.add_development_dependency "bundler"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "byebug"
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "redis", "~> 3.0"
-  spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "webmock", "~> 2.0"
+  spec.add_development_dependency "rake"
+  spec.add_development_dependency "redis"
+  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "webmock"
 end
