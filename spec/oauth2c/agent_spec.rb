@@ -34,7 +34,12 @@ RSpec.describe OAuth2c::Agent do
     stub_request(:post, "http://authz.test/oauth/token")
       .with(
         body: "grant_type=custom&scope=basic+email&custom_code=123",
-        headers: { "Accept": "application/json", "Authorization": "Basic Q0xJRU5UX0lEOkNMSUVOVF9TRUNSRVQ=", "Content-Type": "application/x-www-form-urlencoded; encoding=UTF-8" }
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "Basic Q0xJRU5UX0lEOkNMSUVOVF9TRUNSRVQ=",
+          "Content-Type": "application/x-www-form-urlencoded; encoding=UTF-8",
+          "User-Agent": "dox-oauth2c/#{OAuth2c::VERSION}"
+        }
       )
       .to_return(
         status: 200,

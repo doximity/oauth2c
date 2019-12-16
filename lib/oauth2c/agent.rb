@@ -33,7 +33,10 @@ module OAuth2c
 
       @http_client = HTTP.nodelay
         .accept("application/json")
-        .headers("Content-Type": "application/x-www-form-urlencoded; encoding=UTF-8")
+        .headers(
+          "Content-Type": "application/x-www-form-urlencoded; encoding=UTF-8",
+          "User-Agent": "dox-oauth2c/#{OAuth2c::VERSION}"
+        )
       unless @client_credentials_on_body
         @http_client = @http_client.basic_auth(user: @client_id, pass: @client_secret)
       end
