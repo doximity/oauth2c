@@ -1,3 +1,6 @@
+## 1.1.0 - 12/16/2019
+  * Set User-Agent header on agent requests
+
 ## 1.0.0 - 01/28/2019
   * Allow newer http gem dependency (#3)
   * Drop support for Ruby 2.2 and earlier
