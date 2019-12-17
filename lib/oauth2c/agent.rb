@@ -48,7 +48,7 @@ module OAuth2c
       app_name = ENV.fetch("APP_NAME", nil) # rubocop:disable Env/OutsideConfig, Env/UndefinedVar
       formatted_app_name = (app_name ? " (#{app_name})" : "")
 
-      "#{gem_name}/#{gem_version}#{formatted_app_name}"
+      "dox-#{gem_name}/#{gem_version}#{formatted_app_name}"
     end
 
     def authz_url(response_type:, state:, scope: [], **params)

@@ -42,7 +42,7 @@ RSpec.describe OAuth2c::Agent do
           "Accept": "application/json",
           "Authorization": "Basic Q0xJRU5UX0lEOkNMSUVOVF9TRUNSRVQ=",
           "Content-Type": "application/x-www-form-urlencoded; encoding=UTF-8",
-          "User-Agent": "dox-oauth2c/#{OAuth2c::VERSION} (DoximityApp)"
+          "User-Agent": "dox-dox-oauth2c/#{OAuth2c::VERSION} (DoximityApp)"
         }
       )
       .to_return(
