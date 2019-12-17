@@ -35,11 +35,20 @@ module OAuth2c
         .accept("application/json")
         .headers(
           "Content-Type": "application/x-www-form-urlencoded; encoding=UTF-8",
-          "User-Agent": "dox-oauth2c/#{OAuth2c::VERSION}"
+          "User-Agent": user_agent_header
         )
       unless @client_credentials_on_body
         @http_client = @http_client.basic_auth(user: @client_id, pass: @client_secret)
       end
+    end
+
+    def user_agent_header
+      gem_name = "dox-oauth2c"
+      gem_version = OAuth2c::VERSION
+      app_name = ENV.fetch("APP_NAME", nil) # rubocop:disable Env/OutsideConfig, Env/UndefinedVar
+      formatted_app_name = (app_name ? " (#{app_name})" : "")
+
+      "#{gem_name}/#{gem_version}#{formatted_app_name}"
     end
 
     def authz_url(response_type:, state:, scope: [], **params)

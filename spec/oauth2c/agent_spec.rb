@@ -31,6 +31,10 @@ RSpec.describe OAuth2c::Agent do
   end
 
   it "fetches a token based on the strategy" do
+    # Testing an environment variable that is expected to be set by an outside source and used in
+    # the user agent header
+    allow(ENV).to receive(:fetch).with("APP_NAME", nil).and_return("DoximityApp") # rubocop:disable Env/OutsideConfig
+
     stub_request(:post, "http://authz.test/oauth/token")
       .with(
         body: "grant_type=custom&scope=basic+email&custom_code=123",
@@ -38,7 +42,7 @@ RSpec.describe OAuth2c::Agent do
           "Accept": "application/json",
           "Authorization": "Basic Q0xJRU5UX0lEOkNMSUVOVF9TRUNSRVQ=",
           "Content-Type": "application/x-www-form-urlencoded; encoding=UTF-8",
-          "User-Agent": "dox-oauth2c/#{OAuth2c::VERSION}"
+          "User-Agent": "dox-oauth2c/#{OAuth2c::VERSION} (DoximityApp)"
         }
       )
       .to_return(
