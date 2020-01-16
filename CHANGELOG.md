@@ -1,3 +1,6 @@
+## 1.1.1 01/16/2020
+  * Removed doximity references from code
+
 ## 1.1.0 - 12/16/2019
   * Set User-Agent header on agent requests
 
