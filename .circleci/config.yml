@@ -57,9 +57,6 @@ jobs:
           name: Store test results
           path: tmp/test-results
       - run:
-          name: Run Rubocop
-          command: bundle exec rake ci:rubocop
-      - run:
           name: Build documentation
           command: bundle exec rake ci:doc
       - store_artifacts:
