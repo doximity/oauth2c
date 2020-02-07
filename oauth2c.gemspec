@@ -28,19 +28,10 @@ Gem::Specification.new do |spec|
   spec.description   = %q{OAuth2c is a extensible OAuth2 client implementation}
   spec.homepage      = "https://github.com/doximity/oauth2c"
 
-  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
-  # to allow pushing to a single host or delete this section to allow pushing to any host.
-  # if spec.respond_to?(:metadata)
-  #   spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com'"
-  # else
-  #   raise "RubyGems 2.0 or newer is required to protect against " \
-  #     "public gem pushes."
-  # end
-
   spec.required_ruby_version = ">= 2.3.0"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/})
+    f.match(%r{^(bin|test|spec|features|vendor|tasks|tmp)/})
   end
 
   spec.bindir        = "exe"
@@ -51,10 +42,13 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "jwt", "~> 1.5"
 
   spec.add_development_dependency "bundler"
-  spec.add_development_dependency "pry"
   spec.add_development_dependency "byebug"
+  spec.add_development_dependency "pry"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "redis"
   spec.add_development_dependency "rspec"
+  spec.add_development_dependency "rspec_junit_formatter"
+  spec.add_development_dependency "sdoc"
+  spec.add_development_dependency "standard"
   spec.add_development_dependency "webmock"
 end
