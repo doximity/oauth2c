@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.2.pre1] - 2020-02-06
 ### Changed
-- Release on Nexus using gem-publisher CircleCI Orb
+- Release on RubyGems using gem-publisher CircleCI Orb
 - Build doc and make it available on CircleCI's build artifacts
 - Packing gems
 
