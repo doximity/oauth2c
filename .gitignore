@@ -1,12 +1,12 @@
+.rspec_status
+/*.gem
 /.bundle/
+/.ruby-version
 /.yardoc
-/Gemfile.lock
 /_yardoc/
 /coverage/
 /doc/
 /pkg/
 /spec/reports/
 /tmp/
-
-# rspec failure tracking
-.rspec_status
+/vendor/bundle/
