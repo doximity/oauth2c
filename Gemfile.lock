@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    oauth2c (1.1.2.pre1)
+    oauth2c (1.1.2)
       http (~> 4)
       jwt (~> 1.5)
 
