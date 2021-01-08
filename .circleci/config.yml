@@ -4,10 +4,10 @@ orbs:
   gem: doximity/gem-publisher@0
 
 executors:
-  ruby-latest:
+  ruby-2-6:
     resource_class: small
     docker:
-      - image: circleci/ruby:latest
+      - image: cimg/ruby:2.6
         environment:
           BUNDLE_VERSION: "~> 1.17"
 
@@ -33,7 +33,7 @@ version_tags_only: &version_tags_only
 
 jobs:
   build:
-    executor: ruby-latest
+    executor: ruby-2-6
     steps:
       - checkout
       - run:
@@ -76,7 +76,7 @@ workflows:
           <<: *master_only
       - gem/build:
           <<: *master_only
-          executor: ruby-latest
+          executor: ruby-2-6
           name: gem-build
           requires:
             - build
@@ -87,7 +87,7 @@ workflows:
           <<: *pr_only
       - gem/build:
           <<: *pr_only
-          executor: ruby-latest
+          executor: ruby-2-6
           name: gem-build
           requires:
             - build
@@ -111,7 +111,7 @@ workflows:
           <<: *version_tags_only
       - gem/build:
           <<: *version_tags_only
-          executor: ruby-latest
+          executor: ruby-2-6
           name: gem-build
           requires:
             - build
