@@ -72,7 +72,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler
+  bundler (~> 2.3)
   byebug
   oauth2c!
   pry
@@ -85,4 +85,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.17.2
+   2.3.20

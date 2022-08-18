@@ -41,7 +41,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "http", "~> 4"
   spec.add_runtime_dependency "jwt", "~> 1.5"
 
-  spec.add_development_dependency "bundler"
+  spec.add_development_dependency "bundler", "~> 2.3"
   spec.add_development_dependency "byebug"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "rake"
