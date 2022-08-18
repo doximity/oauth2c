@@ -51,6 +51,6 @@ RSpec.describe OAuth2c::Grants::AuthorizationCode do
       include_redirect_uri: true,
     ).and_return([true, token_payload])
 
-    expect(subject.token(url)).to eq(OAuth2c::AccessToken.new(token_payload))
+    expect(subject.token(url)).to eq(OAuth2c::AccessToken.new(**token_payload))
   end
 end

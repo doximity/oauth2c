@@ -56,7 +56,7 @@ module OAuth2c
         if block_given?
           yield(query_params, fragment_params)
         else
-          ok, response = @agent.token(include_redirect_uri: true, **token_params(query_params))
+          ok, response = @agent.token(include_redirect_uri: true, **token_params(**query_params))
           handle_token_response(ok, response)
         end
       end
