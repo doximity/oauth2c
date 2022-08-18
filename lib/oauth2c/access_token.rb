@@ -25,12 +25,13 @@ module OAuth2c
       :extra,
     )
 
-    def initialize(access_token:, token_type:, expires_in:, expires_at: nil, refresh_token: nil, **extra)
-      @access_token  = access_token
-      @token_type    = token_type
-      @expires_in    = Integer(expires_in)
-      @refresh_token = refresh_token
-
+    def initialize(*unused, **extra)
+      require "pry"
+      binding.pry
+      @access_token  = extra.delete(:access_token)
+      @token_type  = extra.delete(:token_type)
+      @expires_in    = Integer(extra.delete(:expires_in))
+      @refresh_token = extra.delete(:refresh_token)
 
       extra.delete(:expires_at)
       @extra = extra

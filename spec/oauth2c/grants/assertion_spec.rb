@@ -54,9 +54,8 @@ RSpec.describe OAuth2c::Grants::Assertion do
     end
 
     class JWTMatcher
-      def initialize(alg, key, **claims)
-        @alg = alg
-        @key = key
+      def initialize(*overloaded_arg_key, **claims)
+        @alg, @key = overloaded_arg_key
         @claims = claims
       end
 
