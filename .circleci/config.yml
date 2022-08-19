@@ -31,6 +31,8 @@ version_tags_only: &version_tags_only
     tags:
       only: /^v.*/
 
+# get a circleci build going
+
 jobs:
   build:
     executor: ruby-2-6
