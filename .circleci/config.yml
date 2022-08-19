@@ -83,7 +83,6 @@ jobs:
           name: Configure Bundler
           command: |
             gem install bundler --version "${BUNDLE_VERSION}" --force
-            bundle config set --global artifacts.dox.support $NEXUS_PULL_USER:$NEXUS_PULL_PASS
             bundle config set --local jobs '4'
             bundle config set --local retry '3'
       - run:
@@ -126,6 +125,7 @@ workflows:
           executor: ruby-2-7
           name: gem-build
           requires:
+            - future_version_multivariant
             - build
       - pre-release-approval:
           <<: *pr_only
