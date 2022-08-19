@@ -67,6 +67,35 @@ jobs:
           paths:
             - vendor/bundle
 
+  future:
+    parameters:
+      ruby-version:
+        type: string
+    resource_class: small
+    description: "Rb << parameters.ruby-version >>"
+    docker:
+      - image: cimg/ruby:<< parameters.ruby-version >>
+        environment:
+          BUNDLE_VERSION: "2.3.17"
+    steps:
+      - checkout
+      - run:
+          name: Configure Bundler
+          command: |
+            gem install bundler --version "${BUNDLE_VERSION}" --force
+            bundle config set --global artifacts.dox.support $NEXUS_PULL_USER:$NEXUS_PULL_PASS
+            bundle config set --local jobs '4'
+            bundle config set --local retry '3'
+      - run:
+          name: Local Bundle Install
+          command: bundle install --local
+      - run:
+          name: Run Tests
+          command: bundle exec rake ci:specs
+      - store_test_results:
+          name: Store test results
+          path: tmp/test-results
+
 workflows:
   version: 2
 
@@ -83,6 +112,13 @@ workflows:
 
   pull-requests:
     jobs:
+      - future:
+          <<: *pr_only
+          name: "Rb << matrix.ruby-version >>"
+          context: nexus_readonly
+          matrix:
+            parameters:
+              ruby-version: [ "2.7.6", "3.0.6", "3.1.2" ]
       - build:
           <<: *pr_only
       - gem/build:
