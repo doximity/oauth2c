@@ -67,7 +67,7 @@ jobs:
           paths:
             - vendor/bundle
 
-  future:
+  future_version_multivariant:
     parameters:
       ruby-version:
         type: string
@@ -91,7 +91,7 @@ jobs:
           command: bundle install --local
       - run:
           name: Run Tests
-          command: bundle exec rake ci:specs
+          command: ruby -v && bundle exec rake ci:specs
       - store_test_results:
           name: Store test results
           path: tmp/test-results
@@ -112,13 +112,13 @@ workflows:
 
   pull-requests:
     jobs:
-      - future:
+      - future_version_multivariant:
           <<: *pr_only
           name: "Rb << matrix.ruby-version >>"
           context: nexus_readonly
           matrix:
             parameters:
-              ruby-version: [ "2.7.6", "3.0.6", "3.1.2" ]
+              ruby-version: [ "3.0.3", "3.1.2" ]
       - build:
           <<: *pr_only
       - gem/build:
