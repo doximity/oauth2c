@@ -44,12 +44,6 @@ jobs:
             bundle config set --local retry '3'
             bundle install --local
       - run:
-          name: Run Tests
-          command: bundle exec rake ci:specs
-      - store_test_results:
-          name: Store test results
-          path: tmp/test-results
-      - run:
           name: Build documentation
           command: bundle exec rake ci:doc
       - store_artifacts:
