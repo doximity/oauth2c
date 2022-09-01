@@ -37,6 +37,6 @@ RSpec.describe OAuth2c::Grants::RefreshToken do
       scope: [],
     ).and_return([ true, token_payload ])
 
-    expect(subject.token).to eq(OAuth2c::AccessToken.new(token_payload))
+    expect(subject.token).to eq(OAuth2c::AccessToken.new(**token_payload))
   end
 end

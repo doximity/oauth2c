@@ -4,12 +4,12 @@ orbs:
   gem: doximity/gem-publisher@0
 
 executors:
-  ruby-2-6:
+  ruby-2-7:
     resource_class: small
     docker:
-      - image: cimg/ruby:2.6
+      - image: cimg/ruby:2.7
         environment:
-          BUNDLE_VERSION: "~> 1.17"
+          BUNDLE_VERSION: "~> 2.3"
 
 # yaml anchor filters
 master_only: &master_only
@@ -33,39 +33,50 @@ version_tags_only: &version_tags_only
 
 jobs:
   build:
-    executor: ruby-2-6
+    executor: ruby-2-7
     steps:
       - checkout
       - run:
-          name: Install Bundler specific version
+          name: Install Dependencies
           command: |
             gem install bundler --version "${BUNDLE_VERSION}" --force
-      - restore_cache:
-          keys:
-            - v1-bundle-{{ checksum "Gemfile.lock" }}-
-      - run:
-          name: Install Ruby Dependencies
-          command: bundle check --path=vendor/bundle || bundle install --local --frozen --path=vendor/bundle --jobs=4 --retry=3 && bundle clean
-      - save_cache:
-          key: v1-bundle-{{ checksum "Gemfile.lock" }}-
-          paths:
-            - vendor/bundle
-      - run:
-          name: Run Tests
-          command: bundle exec rake ci:specs
-      - store_test_results:
-          name: Store test results
-          path: tmp/test-results
+            bundle config set --local jobs '4'
+            bundle config set --local retry '3'
+            bundle install --local
       - run:
           name: Build documentation
           command: bundle exec rake ci:doc
       - store_artifacts:
           name: Saves documentation
           path: doc
-      - persist_to_workspace:
-          root: .
-          paths:
-            - vendor/bundle
+
+  future_version_multivariant:
+    parameters:
+      ruby-version:
+        type: string
+    resource_class: small
+    description: "Rb << parameters.ruby-version >>"
+    docker:
+      - image: cimg/ruby:<< parameters.ruby-version >>
+        environment:
+          BUNDLE_VERSION: "2.3.17"
+    steps:
+      - checkout
+      - run:
+          name: Configure Bundler
+          command: |
+            gem install bundler --version "${BUNDLE_VERSION}" --force
+            bundle config set --local jobs '4'
+            bundle config set --local retry '3'
+      - run:
+          name: Local Bundle Install
+          command: bundle install --local
+      - run:
+          name: Run Tests
+          command: ruby -v && bundle exec rake ci:specs
+      - store_test_results:
+          name: Store test results
+          path: tmp/test-results
 
 workflows:
   version: 2
@@ -76,20 +87,28 @@ workflows:
           <<: *master_only
       - gem/build:
           <<: *master_only
-          executor: ruby-2-6
+          executor: ruby-2-7
           name: gem-build
           requires:
             - build
 
   pull-requests:
     jobs:
+      - future_version_multivariant:
+          <<: *pr_only
+          name: "Rb << matrix.ruby-version >>"
+          context: nexus_readonly
+          matrix:
+            parameters:
+              ruby-version: [ "2.7.6", "3.0.3", "3.1.2" ]
       - build:
           <<: *pr_only
       - gem/build:
           <<: *pr_only
-          executor: ruby-2-6
+          executor: ruby-2-7
           name: gem-build
           requires:
+            - future_version_multivariant
             - build
       - pre-release-approval:
           <<: *pr_only
@@ -111,7 +130,7 @@ workflows:
           <<: *version_tags_only
       - gem/build:
           <<: *version_tags_only
-          executor: ruby-2-6
+          executor: ruby-2-7
           name: gem-build
           requires:
             - build
