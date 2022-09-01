@@ -4,8 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.0.pre.1] - 2022-08-19
-- Add support for ruby3/ruby 2.7
+## [1.2.0] - 2022-09-01
+
+### Added
+- Adds tests for ruby 3/3.1 in conjunction with 2.7
+- Add regxml gem (this was removed from ruby in 3)
+
+### Changed
+- Updates gem to support both ruby3/ruby 2.7 keyword args
+- Anywhere using an access token will have to splat inside of ruby 3
 
 ## [1.1.2] - 2020-02-24
 ### Changed
