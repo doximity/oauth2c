@@ -3,7 +3,7 @@ PATH
   specs:
     oauth2c (1.2.1)
       http (>= 4)
-      jwt (~> 2.0)
+      jwt (>= 1.5, < 3)
 
 GEM
   remote: https://rubygems.org/
