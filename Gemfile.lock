@@ -3,7 +3,7 @@ PATH
   specs:
     oauth2c (1.2.1)
       http (>= 4)
-      jwt (~> 1.5)
+      jwt (~> 2.0)
 
 GEM
   remote: https://rubygems.org/
@@ -30,7 +30,7 @@ GEM
     http-cookie (1.0.5)
       domain_name (~> 0.5)
     http-form_data (2.3.0)
-    jwt (1.5.6)
+    jwt (2.7.0)
     llhttp-ffi (0.3.1)
       ffi-compiler (~> 1.0)
       rake (~> 13.0)
